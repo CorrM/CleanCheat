@@ -3,7 +3,7 @@
 
 ABSTRACT class SharedDataBase
 {
-protected:
+public:
     virtual ~SharedDataBase() = default;
     
 public:

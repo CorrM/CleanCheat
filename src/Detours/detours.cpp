@@ -8,7 +8,6 @@
 //
 
 
-#include "pch.h"
 //#define DETOUR_DEBUG 1
 #define DETOURS_INTERNAL
 #include "detours.h"

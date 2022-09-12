@@ -4,6 +4,8 @@
 class BasicFeature final : public FeatureBase<int>
 {
 protected:
-    bool Condition() override;
-    void Execute(int* param) override;
+    void OnExecute(int* param) override;
+    
+public:
+    bool Condition(int* param) override;
 };

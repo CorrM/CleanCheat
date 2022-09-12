@@ -8,7 +8,8 @@ class CleanCheat final
 {
 private:
     static bool _init;
-    static std::vector<RunnerBase<void>*> _runners;
+    static bool _busy;
+    static std::vector<RunnerBase*> _runners;
     static std::unordered_map<void**, void*> _detours;
     static SharedDataBase* _sharedData;
 
@@ -22,9 +23,10 @@ public:
     static bool RegisterRunner(TRunner* runner);
 
     static void Tick(void* sharedDataParam);
-    static void Clear();
+    static void Dispose(bool delSharedData, bool delRunners, bool delFeatures);
     
-    static void SwapVmtFunction(void* instance, void* hkFunc, const int32_t vftIndex, void** outOriginalFunc);
+    static void SwapVmtFunction(void* instance, int32_t vmtIndex, void* hkFunc, void** outOriginalFunc);
+    static void UnSwapVmtFunction(void* instance, int32_t vmtIndex, void* originalFunc);
     static void DetourFunction(void** originalFunctionPointer, void* detourPointer);
     static void UnDetourFunction(void** originalFunctionPointer, void* detourPointer);
     static void UnDetourAll();
@@ -42,7 +44,7 @@ bool CleanCheat::RegisterRunner(TRunner* runner)
     if (!_init)
         return false;
 
-    _runners.push_back(reinterpret_cast<RunnerBase<void>*>(runner));
+    _runners.push_back(reinterpret_cast<RunnerBase*>(runner));
 
     return true;
 }

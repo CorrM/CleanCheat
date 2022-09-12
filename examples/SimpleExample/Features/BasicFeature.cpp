@@ -2,12 +2,12 @@
 
 #include "BasicFeature.h"
 
-bool BasicFeature::Condition()
-{
-    return true;
-}
-
-void BasicFeature::Execute(int* param)
+void BasicFeature::OnExecute(int* param)
 {
     std::cout << *param << " From BasicFeature" << std::endl;
+}
+
+bool BasicFeature::Condition(int* param)
+{
+    return true;
 }

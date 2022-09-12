@@ -1,7 +1,7 @@
 ﻿#pragma once
 #include "CleanCheat/RunnerBase.h"
 
-class BasicRunner final : public RunnerBase
+class LevelActorsRunner final : public RunnerBase
 {
 protected:
     void OnExecute() override;

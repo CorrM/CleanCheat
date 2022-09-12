@@ -5,8 +5,11 @@
 #include "../Detours/detours.h"
 #include "CleanCheat.h"
 
+#include <thread>
+
 bool CleanCheat::_init = false;
-std::vector<RunnerBase<void>*> CleanCheat::_runners;
+bool CleanCheat::_busy = false;
+std::vector<RunnerBase*> CleanCheat::_runners;
 std::unordered_map<void**, void*> CleanCheat::_detours;
 SharedDataBase* CleanCheat::_sharedData = nullptr;
 
@@ -23,31 +26,74 @@ void CleanCheat::Tick(void* sharedDataParam)
 {
     if (!_init)
         return;
-    
+
+    _busy = true;
     _sharedData->Tick(sharedDataParam);
     
-    for (RunnerBase<void>*& runner : _runners)
+    for (RunnerBase*& runner : _runners)
     {
         if (runner->Condition())
             runner->Tick();
     }
+    
+    _busy = false;
 }
 
-void CleanCheat::Clear()
+void CleanCheat::Dispose(const bool delSharedData, const bool delRunners, const bool delFeatures)
 {
-    _runners.clear();
+    _init = false;
+
+    // Wait Tick to finish
+    while (_busy)
+    {
+        std::this_thread::sleep_for(std::chrono::milliseconds(2));
+    }
+
+    // Clear runners
+    if (delRunners || delFeatures)
+    {
+        for (RunnerBase* runner : _runners)
+        {
+            if (delFeatures)
+                runner->DeleteFeatures();
+            
+            if (delRunners)
+                delete runner;
+        }
+        
+        _runners.clear();
+    }
+
+    // Un hook all functions
+    UnDetourAll();
+    
+    if (delSharedData)
+    {
+        delete _sharedData;
+        _sharedData = nullptr;
+    }
 }
 
-void CleanCheat::SwapVmtFunction(void* instance, void* hkFunc, const int32_t vftIndex, void** outOriginalFunc)
+void CleanCheat::SwapVmtFunction(void* instance, const int32_t vmtIndex, void* hkFunc, void** outOriginalFunc)
 {
     void** index = *static_cast<void***>(instance);
     if (outOriginalFunc)
-        *outOriginalFunc = index[vftIndex];
+        *outOriginalFunc = index[vmtIndex];
 
     DWORD virtualProtect;
-    VirtualProtect(&index[vftIndex], 0x8, PAGE_EXECUTE_READWRITE, &virtualProtect);
-    index[vftIndex] = hkFunc;
-    VirtualProtect(&index[vftIndex], 0x8, virtualProtect, &virtualProtect);
+    VirtualProtect(&index[vmtIndex], 0x8, PAGE_EXECUTE_READWRITE, &virtualProtect);
+    index[vmtIndex] = hkFunc;
+    VirtualProtect(&index[vmtIndex], 0x8, virtualProtect, &virtualProtect);
+}
+
+void CleanCheat::UnSwapVmtFunction(void* instance, const int32_t vmtIndex, void* originalFunc)
+{
+    void** index = *static_cast<void***>(instance);
+
+    DWORD virtualProtect;
+    VirtualProtect(&index[vmtIndex], 0x8, PAGE_EXECUTE_READWRITE, &virtualProtect);
+    index[vmtIndex] = originalFunc;
+    VirtualProtect(&index[vmtIndex], 0x8, virtualProtect, &virtualProtect);
 }
 
 void CleanCheat::DetourFunction(void** originalFunctionPointer, void* detourPointer)

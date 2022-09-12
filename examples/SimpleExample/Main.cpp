@@ -9,9 +9,6 @@
 int main(int argc, char* argv[])
 {
     int initData = 1;
-
-    // SharedData
-    SharedData sharedData;
     
     // Features
     BasicFeature basic;
@@ -25,6 +22,9 @@ int main(int argc, char* argv[])
     lvlRunner.RegisterFeature(&basic);
     lvlRunner.RegisterFeature(&test);
 
+    // SharedData
+    SharedData sharedData;
+    
     // Main
     CleanCheat::Init(&sharedData);
     CleanCheat::RegisterRunner(&lvlRunner);

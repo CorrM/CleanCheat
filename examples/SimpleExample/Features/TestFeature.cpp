@@ -1,15 +1,13 @@
 ﻿#include <iostream>
 #include "TestFeature.h"
 
-bool flip = false;
-
-bool TestFeature::Condition()
-{
-    flip = !flip;
-    return flip;
-}
-
-void TestFeature::Execute(int* param)
+void TestFeature::OnExecute(int* param)
 {
     std::cout << *param << " From TestFeature" << std::endl;
+}
+
+bool TestFeature::Condition(int* param)
+{
+    _flip = !_flip;
+    return _flip;
 }

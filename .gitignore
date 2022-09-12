@@ -397,6 +397,10 @@ FodyWeavers.xsd
 # JetBrains Rider
 *.sln.iml
 
+# Examples
+SDK/
+SDK.h
+
 /packages/
 riderModule.iml
 /_ReSharper.Caches/

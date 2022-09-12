@@ -3,7 +3,12 @@
 
 class TestFeature final : public FeatureBase<int>
 {
+private:
+    bool _flip = false;
+
 protected:
-    bool Condition() override;
-    void Execute(int* param) override;
+    void OnExecute(int* param) override;
+    
+public:
+    bool Condition(int* param) override;
 };
