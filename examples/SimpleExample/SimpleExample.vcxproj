@@ -21,7 +21,7 @@
   <ItemGroup>
     <ClCompile Include="Features\BasicFeature.cpp" />
     <ClCompile Include="Features\TestFeature.cpp" />
-    <ClCompile Include="Program.cpp" />
+    <ClCompile Include="Main.cpp" />
     <ClCompile Include="Runners\BasicRunner.cpp" />
     <ClCompile Include="SharedData.cpp" />
   </ItemGroup>
