@@ -17,7 +17,6 @@ private:
     
 private:
     bool CheckVisibility(const CG::ACharacter* character, int32_t boneIndex, CG::FHitResult* outHitResult = nullptr) const;
-    void OnActorLevelLoop(CG::AActor* curActor);
 
 protected:
     void OnExecute(CG::AActor* curActor) override;

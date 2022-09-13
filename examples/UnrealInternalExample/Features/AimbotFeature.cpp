@@ -47,7 +47,7 @@ bool AimbotFeature::CheckVisibility(const CG::ACharacter* const character, const
         CG::FLinearColor(0.0f, 0.0f, 0.0f, 0.0f),
         CG::FLinearColor(0, 0, 0, 0),
         0.0f);
-    
+
     if (lineTrack)
     {
         if (outHitResult)
@@ -57,15 +57,48 @@ bool AimbotFeature::CheckVisibility(const CG::ACharacter* const character, const
         if (actor && actor == character)
             return true;
     }
-    
+
     return false;
 }
 
-void AimbotFeature::OnActorLevelLoop(CG::AActor* curActor)
+void AimbotFeature::OnExecute(CG::AActor* curActor)
 {
     auto* sharedData = CleanCheat::GetSharedData<SharedDataStruct>();
-    auto* player = reinterpret_cast<CG::AWW3Character*>(curActor);
 
+    if (GetAsyncKeyState(VK_NUMPAD1) & 1)
+    {
+        LOG("BONEID: %d", _targetBoneId);
+        ++_targetBoneId;
+    }
+
+    if (GetAsyncKeyState(VK_NUMPAD2) & 1)
+    {
+        LOG("BONEID: %d", _targetBoneId);
+        --_targetBoneId;
+    }
+    
+    Utils::DrawCircle(
+        sharedData->CurrentCanvas,
+        sharedData->ScreenCenterPos,
+        _radius,
+        64,
+        _targetCircleColor);
+
+    if (!sharedData->GCharacter || !_targetPlayer)
+        return;
+
+    CG::FVector cameraLocation = sharedData->GController->PlayerCameraManager->GetCameraLocation();
+    CG::FVector targetPlayerHead = _targetPlayer->Mesh->GetBoneWorldPos(_targetBoneId);
+    CG::FRotator rotator = (targetPlayerHead - cameraLocation).ToRotator();
+
+    sharedData->GController->ControlRotation = rotator;
+    sharedData->CurrentCanvas->K2_DrawBox(
+        Utils::WorldToScreen(targetPlayerHead),
+        {4.f, 4.f},
+        1.0f,
+        {255.0f, 255.0f, 0.0f, 255.0f});
+
+    auto* player = reinterpret_cast<CG::AWW3Character*>(curActor);
     if (!player || player == sharedData->GCharacter || player->CurrentHealth <= 0)
         return;
 
@@ -75,17 +108,17 @@ void AimbotFeature::OnActorLevelLoop(CG::AActor* curActor)
 
     if (playerState->PlayingState != CG::EWW3PlayingState::EWW3PS_Alive)
         return;
-    
+
     if (playerState->CurrentSquad->Team->TeamId == sharedData->GCharacter->SavedPlayerState->CurrentSquad->Team->TeamId)
         return;
-    
+
     // Hold
     if (!(GetAsyncKeyState(VK_RBUTTON) >> 15))
     {
         LastBestTargetPlayer.Player = nullptr;
         return;
     }
-    
+
     if (_targetPlayer && _targetPlayer->CurrentHealth > 0)
     {
         _targetPlayer = nullptr;
@@ -94,7 +127,7 @@ void AimbotFeature::OnActorLevelLoop(CG::AActor* curActor)
 
     if (!player->RootComponent || !player->Mesh)
         return;
-    
+
     bool w2Screen;
     CG::FVector2D headPos = Utils::WorldToScreen(player->RootComponent->RelativeLocation, &w2Screen);
     
@@ -102,7 +135,7 @@ void AimbotFeature::OnActorLevelLoop(CG::AActor* curActor)
     {
         const float distance = sharedData->GCharacter->RootComponent->RelativeLocation.DistanceMeter(player->RootComponent->RelativeLocation);
         const float distanceInScr = std::abs(sharedData->ScreenCenterPos.Distance(headPos));
-        
+
         if (!LastBestTargetPlayer.Player || LastBestTargetPlayer.DistanceFromCenterOfScreen > distanceInScr || LastBestTargetPlayer.WorldDistance > distance)
         {
             LastBestTargetPlayer.Player = player;
@@ -110,76 +143,6 @@ void AimbotFeature::OnActorLevelLoop(CG::AActor* curActor)
             LastBestTargetPlayer.DistanceFromCenterOfScreen = distanceInScr;
         }
     }
-}
-
-void AimbotFeature::OnExecute(CG::AActor* curActor)
-{
-    auto* sharedData = CleanCheat::GetSharedData<SharedDataStruct>();
-
-    /*
-    if (GetAsyncKeyState(VK_NUMPAD1) & 1)
-        ++_targetBoneId;
-    
-    if (GetAsyncKeyState(VK_NUMPAD2) & 1)
-        --_targetBoneId;
-    */
-    // LOG("BONEID: %d", _targetBoneId);
-    
-    Utils::DrawCircle(
-        sharedData->CurrentCanvas,
-        sharedData->ScreenCenterPos,
-        _radius,
-        64,
-        _targetCircleColor);
-    
-    if (!sharedData->GCharacter || !_targetPlayer)
-        return;
-    
-    //if (!(GetAsyncKeyState(VK_MENU) & 1))
-    //    return;
-
-    //if (!sharedData->GController->LineOfSightTo(_targetPlayer, CG::FVector(), false))
-    //    return;
-
-    //CG::TArray<CG::FTransform>& componentSp = (uintptr_t)_targetPlayer->Mesh + offset;
-
-    constexpr float smoothness = 1.0f;
-    CG::FVector cameraLocation = sharedData->GController->PlayerCameraManager->GetCameraLocation();
-    CG::FVector targetPlayerHead = _targetPlayer->Mesh->GetBoneWorldPos(_targetBoneId);
-    //CG::FVector targetPlayerHead = _targetPlayer->RootComponent->RelativeLocation;
-    
-    /*
-    CG::TArray<CG::AActor*> blankArray{};
-    CG::FHitResult hitResult{};
-    kSystemLibrary->STATIC_LineTraceSingle(
-        reinterpret_cast<CG::UObject*>(CG::UWorld::GWorld),
-        cameraLocation,
-        targetPlayerHead,
-        CG::ETraceTypeQuery::TraceTypeQuery3,
-        true,
-        blankArray,
-        CG::EDrawDebugTrace::ForDuration,
-        &hitResult,
-        true,
-        {1.0f, 1.0f, 0.0f, 1.0f},
-        {1.0f, 0.0f, 0.0f, 1.0f},
-        5.0f);
-    */
-    
-    //CG::FVector targetPos = cameraLocation
-    //                    + (sharedData->GCharacter->GetVelocity()
-    //                    * cameraLocation.Distance(targetPlayerHead)
-    //                    / 49650.f
-    //                    * smoothness);
-    
-    CG::FRotator rotator = (targetPlayerHead - cameraLocation).ToRotator();
-    
-    sharedData->GController->ControlRotation = rotator;
-    sharedData->CurrentCanvas->K2_DrawBox(
-        Utils::WorldToScreen(targetPlayerHead),
-        {4.f, 4.f},
-        1.0f,
-        {255.0f, 255.0f, 0.0f, 255.0f});
 }
 
 bool AimbotFeature::Condition(CG::AActor* curActor)
