@@ -7,6 +7,9 @@
 //  Copyright (c) Microsoft Corporation.  All rights reserved.
 //
 
+#ifdef USE_PCH
+#include "pch.h"
+#endif
 
 //#define DETOUR_DEBUG 1
 #define DETOURS_INTERNAL

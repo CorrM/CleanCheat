@@ -9,6 +9,10 @@
 //  Module enumeration functions.
 //
 
+#ifdef USE_PCH
+#include "pch.h"
+#endif
+
 //#define DETOUR_DEBUG 1
 #define DETOURS_INTERNAL
 

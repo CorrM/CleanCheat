@@ -16,7 +16,7 @@ typedef void(__thiscall* PostRenderType)(CG::UGameViewportClient*, CG::UCanvas*)
 
 #if CONSOLE_OUTPUT
 FILE* ConsoleCOut = nullptr;
-#endif // CONSOLE_OUTPUT
+#endif
 
 bool Unload = false;
 bool Once = false;
@@ -48,7 +48,7 @@ void WINAPI PostRenderHook(CG::UGameViewportClient* gameViewportClient, CG::UCan
 	}
 	catch (...)
 	{
-		LOG("Error!!!!!!!");
+		LOG("Error: %s", "Hook 'ProcessEvent' falied");
 	}
 	
 	// Unload
@@ -71,9 +71,6 @@ void WINAPI PostRenderHook(CG::UGameViewportClient* gameViewportClient, CG::UCan
 		CleanCheat::Tick(canvas);
 	}
 	catch (...) {}
-	
-	if (sharedData)
-		canvas->K2_DrawText(sharedData->RobotoFont, L"TheCycle Cheat", CG::FVector2D(0, 0), CG::FVector2D(1, 1), CG::FLinearColor(255.0f, 255.0f, 255.0f, 1.0f), 1.0f, CG::FLinearColor(0, 0, 0, 0), CG::FVector2D(), false, false, false, CG::FLinearColor(255.0f, 255.0f, 255.0f, 1.0f));
 	
 	// Menu
 	if (sharedData)
@@ -168,7 +165,7 @@ void DllUnload()
 		CleanCheat::UnSwapVmtFunction(localPlayer->ViewportClient, POST_RENDER_INDEX, &OPostRender);
 	}
 	
-	CleanCheat::Dispose(true, true, true);
+	CleanCheat::Clear();
 
 #if CONSOLE_OUTPUT
 	fclose(ConsoleCOut);
@@ -179,11 +176,6 @@ void DllUnload()
 
 BOOL APIENTRY DllMain(const HMODULE hModule, const DWORD ulReasonForCall, LPVOID lpReserved)
 {
-	// NOTE:
-	// - If Game crashed without any log then make sure next to game file there is no stander helper dlls (vcruntime140.dll, etc)
-	// - When u face an error Or hook just work for DEBUG and not for RELEASE
-	// https://discord.com/channels/@me/756534914224226316/992303156799217705
-	
 	if (ulReasonForCall != DLL_PROCESS_ATTACH)
 		return TRUE;
 

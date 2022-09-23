@@ -1,4 +1,8 @@
-﻿#include "RunnerBase.h"
+﻿#ifdef USE_PCH
+#include "pch.h"
+#endif
+
+#include "RunnerBase.h"
 
 void RunnerBase::ExecuteBeforeCallbacks() const
 {
@@ -28,10 +32,7 @@ void RunnerBase::Tick()
     ExecuteAfterCallback();
 }
 
-void RunnerBase::DeleteFeatures()
+void RunnerBase::Clear()
 {
-    for (FeatureBase<void>* feature : _features)
-        delete feature;
-    
     _features.clear();
 }

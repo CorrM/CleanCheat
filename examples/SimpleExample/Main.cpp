@@ -1,4 +1,5 @@
 #include <thread>
+#include <Windows.h>
 
 #include "CleanCheat/CleanCheat.h"
 #include "SharedData.h"
@@ -29,11 +30,14 @@ int main(int argc, char* argv[])
     CleanCheat::Init(&sharedData);
     CleanCheat::RegisterRunner(&lvlRunner);
 
-    while (true)
+    while (!(GetAsyncKeyState(VK_END) & 1))
     {
         CleanCheat::Tick(&initData);
         std::this_thread::sleep_for(std::chrono::milliseconds(1000));
     }
+
+    // Clear, No need to delete features and runners as the stack will take care of that
+    CleanCheat::Clear();
     
     return 0;
 }

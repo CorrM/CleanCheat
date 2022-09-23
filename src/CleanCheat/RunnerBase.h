@@ -41,9 +41,9 @@ public:
     bool RegisterFeature(TFeature* feature);
 
     /// <summary>
-    /// Delete all features (from memory)
+    /// Clear
     /// </summary>
-    void DeleteFeatures();
+    void Clear();
 };
 
 template <class TFeature>

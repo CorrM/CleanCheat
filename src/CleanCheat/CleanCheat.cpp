@@ -1,11 +1,14 @@
 #define NOMINMAX
 #define WIN32_LEAN_AND_MEAN
 
-#include <Windows.h>
-#include "../Detours/detours.h"
-#include "CleanCheat.h"
+#ifdef USE_PCH
+#include "pch.h"
+#endif
 
 #include <thread>
+#include <Windows.h>
+#include "Detours/detours.h"
+#include "CleanCheat.h"
 
 bool CleanCheat::_init = false;
 bool CleanCheat::_busy = false;
@@ -13,12 +16,19 @@ std::vector<RunnerBase*> CleanCheat::_runners;
 std::unordered_map<void**, void*> CleanCheat::_detours;
 SharedDataBase* CleanCheat::_sharedData = nullptr;
 
+#ifdef SHARED_DATA_TYPE
+SHARED_DATA_TYPE* CleanCheat::GetSharedData()
+{
+    return reinterpret_cast<SHARED_DATA_TYPE*>(_sharedData);
+}
+#endif
+
 void CleanCheat::Init(SharedDataBase* sharedData)
 {
     if (_init)
         return;
     _init = true;
-    
+
     _sharedData = sharedData;
 }
 
@@ -29,17 +39,17 @@ void CleanCheat::Tick(void* sharedDataParam)
 
     _busy = true;
     _sharedData->Tick(sharedDataParam);
-    
+
     for (RunnerBase*& runner : _runners)
     {
         if (runner->Condition())
             runner->Tick();
     }
-    
+
     _busy = false;
 }
 
-void CleanCheat::Dispose(const bool delSharedData, const bool delRunners, const bool delFeatures)
+void CleanCheat::Clear()
 {
     _init = false;
 
@@ -50,28 +60,16 @@ void CleanCheat::Dispose(const bool delSharedData, const bool delRunners, const 
     }
 
     // Clear runners
-    if (delRunners || delFeatures)
+    for (RunnerBase* runner : _runners)
     {
-        for (RunnerBase* runner : _runners)
-        {
-            if (delFeatures)
-                runner->DeleteFeatures();
-            
-            if (delRunners)
-                delete runner;
-        }
-        
-        _runners.clear();
+        runner->Clear();
     }
+    _runners.clear();
 
     // Un hook all functions
     UnDetourAll();
-    
-    if (delSharedData)
-    {
-        delete _sharedData;
-        _sharedData = nullptr;
-    }
+
+    _sharedData = nullptr;
 }
 
 void CleanCheat::SwapVmtFunction(void* instance, const int32_t vmtIndex, void* hkFunc, void** outOriginalFunc)
@@ -96,24 +94,26 @@ void CleanCheat::UnSwapVmtFunction(void* instance, const int32_t vmtIndex, void*
     VirtualProtect(&index[vmtIndex], 0x8, virtualProtect, &virtualProtect);
 }
 
-void CleanCheat::DetourFunction(void** originalFunctionPointer, void* detourPointer)
+bool CleanCheat::DetourFunction(void** originalFunctionPointer, void* detourPointer)
 {
     _detours.emplace(originalFunctionPointer, detourPointer);
-    
+
     DetourTransactionBegin();
     DetourUpdateThread(GetCurrentThread());
     DetourAttach(originalFunctionPointer, detourPointer);
-    DetourTransactionCommit();
+    
+    return DetourTransactionCommit() == NO_ERROR;
 }
 
-void CleanCheat::UnDetourFunction(void** originalFunctionPointer, void* detourPointer)
+bool CleanCheat::UnDetourFunction(void** originalFunctionPointer, void* detourPointer)
 {
     _detours.erase(originalFunctionPointer);
-    
+
     DetourTransactionBegin();
     DetourUpdateThread(GetCurrentThread());
     DetourDetach(originalFunctionPointer, detourPointer);
-    DetourTransactionCommit();
+    
+    return DetourTransactionCommit() == NO_ERROR;
 }
 
 void CleanCheat::UnDetourAll()

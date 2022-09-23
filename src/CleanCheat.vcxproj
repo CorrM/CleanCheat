@@ -20,18 +20,19 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="CleanCheat\CleanCheat.cpp" />
+    <ClCompile Include="CleanCheat\Detours\detours.cpp" />
+    <ClCompile Include="CleanCheat\Detours\disasm.cpp" />
+    <ClCompile Include="CleanCheat\Detours\modules.cpp" />
     <ClCompile Include="CleanCheat\RunnerBase.cpp" />
-    <ClCompile Include="Detours\detours.cpp" />
-    <ClCompile Include="Detours\disasm.cpp" />
-    <ClCompile Include="Detours\modules.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CleanCheat\CleanCheat.h" />
+    <ClInclude Include="CleanCheat\Detours\detours.h" />
     <ClInclude Include="CleanCheat\FeatureBase.h" />
     <ClInclude Include="CleanCheat\Macros.h" />
     <ClInclude Include="CleanCheat\RunnerBase.h" />
     <ClInclude Include="CleanCheat\SharedDataBase.h" />
-    <ClInclude Include="Detours\detours.h" />
+    <ClInclude Include="Options.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>15.0</VCProjectVersion>

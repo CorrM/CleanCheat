@@ -14,29 +14,35 @@ private:
     static SharedDataBase* _sharedData;
 
 public:
+#ifndef SHARED_DATA_TYPE
     template <class TSharedData>
     static TSharedData* GetSharedData();
-
+#else
+    static SHARED_DATA_TYPE* GetSharedData();
+#endif
+    
     static void Init(SharedDataBase* sharedData);
 
     template <class TRunner>
     static bool RegisterRunner(TRunner* runner);
 
     static void Tick(void* sharedDataParam);
-    static void Dispose(bool delSharedData, bool delRunners, bool delFeatures);
+    static void Clear();
     
     static void SwapVmtFunction(void* instance, int32_t vmtIndex, void* hkFunc, void** outOriginalFunc);
     static void UnSwapVmtFunction(void* instance, int32_t vmtIndex, void* originalFunc);
-    static void DetourFunction(void** originalFunctionPointer, void* detourPointer);
-    static void UnDetourFunction(void** originalFunctionPointer, void* detourPointer);
+    static bool DetourFunction(void** originalFunctionPointer, void* detourPointer);
+    static bool UnDetourFunction(void** originalFunctionPointer, void* detourPointer);
     static void UnDetourAll();
 };
 
+#ifndef SHARED_DATA_TYPE
 template <class TSharedData>
 TSharedData* CleanCheat::GetSharedData()
 {
     return reinterpret_cast<TSharedData*>(_sharedData);
 }
+#endif
 
 template <class TRunner>
 bool CleanCheat::RegisterRunner(TRunner* runner)
