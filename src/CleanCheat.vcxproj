@@ -19,20 +19,27 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="CleanCheat\CleanCheat.cpp" />
-    <ClCompile Include="CleanCheat\Detours\detours.cpp" />
-    <ClCompile Include="CleanCheat\Detours\disasm.cpp" />
-    <ClCompile Include="CleanCheat\Detours\modules.cpp" />
-    <ClCompile Include="CleanCheat\RunnerBase.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="CleanCheat\CleanCheat.h" />
-    <ClInclude Include="CleanCheat\Detours\detours.h" />
-    <ClInclude Include="CleanCheat\FeatureBase.h" />
+    <ClCompile Include="Features\BasicFeature.cpp" />
+    <ClCompile Include="Features\TestFeature.cpp" />
+    <ClCompile Include="Main.cpp" />
+    <ClCompile Include="Runners\BasicRunner.cpp" />
+    <ClCompile Include="SharedDataStruct.cpp" />
+    <ClInclude Include="CleanCheat.h" />
     <ClInclude Include="CleanCheat\Macros.h" />
+    <ClInclude Include="CleanCheat\HookManager.h" />
+    <ClInclude Include="CleanCheat\MemoryManager.h" />
     <ClInclude Include="CleanCheat\RunnerBase.h" />
+    <ClInclude Include="CleanCheat\Libs\Detours\detours.h" />
+    <ClCompile Include="CleanCheat\Libs\Detours\detours.cpp" />
+    <ClCompile Include="CleanCheat\Libs\Detours\disasm.cpp" />
+    <ClCompile Include="CleanCheat\Libs\Detours\modules.cpp" />
+    <ClInclude Include="CleanCheat\CleanCheat.h" />
+    <ClInclude Include="CleanCheat\FeatureBase.h" />
     <ClInclude Include="CleanCheat\SharedDataBase.h" />
-    <ClInclude Include="Options.h" />
+    <ClInclude Include="Features\BasicFeature.h" />
+    <ClInclude Include="Features\TestFeature.h" />
+    <ClInclude Include="Runners\BasicRunner.h" />
+    <ClInclude Include="SharedDataStruct.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>15.0</VCProjectVersion>
@@ -46,26 +53,23 @@
     <PreferredToolArchitecture>x64</PreferredToolArchitecture>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
-    <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>v143</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
-    <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <PlatformToolset>v143</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
-    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>v143</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
-    <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <PlatformToolset>v143</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
@@ -110,6 +114,8 @@
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <AdditionalIncludeDirectories>$(ProjectDir);</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -125,10 +131,13 @@
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <AdditionalIncludeDirectories>$(ProjectDir);</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalOptions></AdditionalOptions>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -142,6 +151,8 @@
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <AdditionalIncludeDirectories>$(ProjectDir);</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -161,7 +172,8 @@
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
-      <LanguageStandard>Default</LanguageStandard>
+      <AdditionalIncludeDirectories>$(ProjectDir);</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>

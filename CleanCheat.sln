@@ -5,8 +5,6 @@ VisualStudioVersion = 17.2.32630.192
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "CleanCheat", "src\CleanCheat.vcxproj", "{BEEC61DF-CAB9-4549-B120-AB313524296D}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "SimpleExample", "examples\SimpleExample\SimpleExample.vcxproj", "{F73C37C6-7329-4006-917D-8965877B7275}"
-EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "UnrealInternalExample", "examples\UnrealInternalExample\UnrealInternalExample.vcxproj", "{9A5E5580-91BC-4929-A2B9-921302D1E685}"
 EndProject
 Global
@@ -17,14 +15,6 @@ Global
 		Release|x64 = Release|x64
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{F73C37C6-7329-4006-917D-8965877B7275}.Debug|Win32.ActiveCfg = Debug|Win32
-		{F73C37C6-7329-4006-917D-8965877B7275}.Debug|Win32.Build.0 = Debug|Win32
-		{F73C37C6-7329-4006-917D-8965877B7275}.Debug|x64.ActiveCfg = Debug|x64
-		{F73C37C6-7329-4006-917D-8965877B7275}.Debug|x64.Build.0 = Debug|x64
-		{F73C37C6-7329-4006-917D-8965877B7275}.Release|Win32.ActiveCfg = Release|Win32
-		{F73C37C6-7329-4006-917D-8965877B7275}.Release|Win32.Build.0 = Release|Win32
-		{F73C37C6-7329-4006-917D-8965877B7275}.Release|x64.ActiveCfg = Release|x64
-		{F73C37C6-7329-4006-917D-8965877B7275}.Release|x64.Build.0 = Release|x64
 		{BEEC61DF-CAB9-4549-B120-AB313524296D}.Debug|Win32.ActiveCfg = Debug|Win32
 		{BEEC61DF-CAB9-4549-B120-AB313524296D}.Debug|Win32.Build.0 = Debug|Win32
 		{BEEC61DF-CAB9-4549-B120-AB313524296D}.Debug|x64.ActiveCfg = Debug|x64

@@ -1,235 +1,208 @@
 #include "pch.h"
 #include "Global.h"
 #include "Utils.h"
-#include "Menu.h"
-#include "SharedDataStruct.h"
 
-#include "CleanCheat/CleanCheat.h"
-
+#include "CleanCheat.h"
 #include "Runners/LevelActorsRunner.h"
-
 #include "Features/AimbotFeature.h"
 #include "Features/ChamsFeature.h"
 
-typedef void(__thiscall* ProcessEventType)(CG::UObject*, CG::UFunction*, void*);
-typedef void(__thiscall* PostRenderType)(CG::UGameViewportClient*, CG::UCanvas*);
+typedef void (__thiscall* ProcessEventType)(CG::UObject*, CG::UFunction*, void*);
+typedef void (__thiscall* PostRenderType)(CG::UGameViewportClient*, CG::UCanvas*);
 
-#if CONSOLE_OUTPUT
-FILE* ConsoleCOut = nullptr;
-#endif
+ProcessEventType OProcessEvent = nullptr;
+PostRenderType OPostRender = nullptr;
 
 bool Unload = false;
 bool Once = false;
 bool Working = false;
 
-ProcessEventType OProcessEvent = nullptr;
-PostRenderType OPostRender = nullptr;
+ChamsFeature* Chams = nullptr;
+AimbotFeature* Aimbot = nullptr;
 
-void DllUnload();
-
-void WINAPI ProcessEventHook(CG::UObject* thiz, CG::UFunction* function, void* parms)
+bool InitCleanCheat()
 {
-	//LOG("%s", function->GetFullName().c_str());
-	OProcessEvent(thiz, function, parms);
-}
+    // Features
+    Chams = new ChamsFeature();
+    Chams->Init();
 
-void WINAPI PostRenderHook(CG::UGameViewportClient* gameViewportClient, CG::UCanvas* canvas)
-{
-	auto* sharedData = CleanCheat::GetSharedData<SharedDataStruct>();
+    Aimbot = new AimbotFeature();
+    Aimbot->Init();
 
-	try
-	{
-		if (!Once)
-		{
-			Once = true;
+    // Runners
+    bool actorFeaturesReg = true;
+    auto* actorRunner = new LevelActorsRunner();
+    
+    actorFeaturesReg &= actorRunner->RegisterFeature(Chams);
+    actorFeaturesReg &= actorRunner->RegisterFeature(Aimbot);
 
-			CleanCheat::DetourFunction(reinterpret_cast<void**>(&OProcessEvent), reinterpret_cast<void*>(&ProcessEventHook));
-		}
-	}
-	catch (...)
-	{
-		LOG("Error: %s", "Hook 'ProcessEvent' falied");
-	}
-	
-	// Unload
-	if (GetAsyncKeyState(UNLOAD_KEY) & 1)
-	{
-		Unload = true;
-		DllUnload();
-		goto Exit;
-	}
+    if (!actorFeaturesReg)
+    {
+        LOG("Runner registration failed");
+        return false;
+    }
 
-	if (Unload)
-		goto Exit;
+    CleanCheatOptions options;
+    options.UseLogger = true;
 
-	// Shared data
-	if (!sharedData)
-		goto Exit;
+    // Init CleanCheat
+    CleanCheat::Init(options);
 
-	try
-	{
-		CleanCheat::Tick(canvas);
-	}
-	catch (...) {}
-	
-	// Menu
-	if (sharedData)
-		Menu::Tick(canvas, sharedData->RobotoFont);
+    bool regRunners = true;
+    regRunners &= CleanCheat::RegisterRunner(actorRunner);
 
-	Exit:
-	OPostRender(gameViewportClient, canvas);
-}
-
-void MainEntryPoint(HMODULE hModule)
-{
-	if (!CG::InitSdk())
-	{
-		LOG("SDK initialization failed");
-		return;
-	}
-	LOG("SDK Initialized successfully");
-	LOG("ModuleBase: %p", static_cast<void*>(GetModuleHandleA(nullptr)));
-	
-	// GWorld
-	CG::UWorld* gWorld = *CG::UWorld::GWorld;
-	if (!gWorld)
-	{
-		LOG("GWorld is nullptr");
-		return;
-	}
-	LOG("GWorld: %p", gWorld);
-
-	// LocalPlayer
-	CG::ULocalPlayer* localPlayer = Utils::GetLocalPlayer();
-	if (!localPlayer)
-	{
-		LOG("localPlayer is nullptr");
-		return;
-	}
-	LOG("LocalPlayer: %p", localPlayer);
-	LOG("ViewportClient : 0x%llx", reinterpret_cast<uintptr_t>(localPlayer->ViewportClient));
-
-	// Features
-	auto* chams = new ChamsFeature();
-	chams->Init();
-	
-	auto* aimbot = new AimbotFeature();
-	aimbot->Init();
-
-	// Runners
-	auto* actorRunner = new LevelActorsRunner();
-	
-	bool runnerInit = true;
-	runnerInit &= actorRunner->RegisterFeature(chams);
-	runnerInit &= actorRunner->RegisterFeature(aimbot);
-
-	if (!runnerInit)
-	{
-		LOG("Runner failed");
-		return;
-	}
-	
-	// SharedData
-	auto* sharedData = new SharedDataStruct();
-
-	// Init CleanCheat
-	CleanCheat::Init(sharedData);
-	CleanCheat::RegisterRunner(actorRunner);
-
-	// PostRender
-	std::vector<CG::UGameViewportClient*> gameViewportClients = CG::UObject::FindObjects<CG::UGameViewportClient>();
-	LOG("GameViewportClientCount: %d", static_cast<int>(gameViewportClients.size()));
-	for (int i = 1; i < static_cast<int>(gameViewportClients.size()) - 1; ++i)
-	{
-		CG::UGameViewportClient*& gameViewportClient = gameViewportClients[i];
-		
-		void** gameViewportClientVmt = *reinterpret_cast<void***>(gameViewportClient);
-		LOG("PostRender     : 0x%llx", reinterpret_cast<uintptr_t>(gameViewportClientVmt[POST_RENDER_INDEX]));
-
-		CleanCheat::SwapVmtFunction(gameViewportClient, POST_RENDER_INDEX, &PostRenderHook, reinterpret_cast<void**>(&OPostRender));
-	}
-
-	// ProcessEventType
-	void** localPlayerVmt = *reinterpret_cast<void***>(localPlayer);
-	OProcessEvent = reinterpret_cast<ProcessEventType>(localPlayerVmt[PROCESS_EVENT_INDEX]);
-	LOG("ProcessEvents  : 0x%llx", reinterpret_cast<uintptr_t>(OProcessEvent));
+    return regRunners;
 }
 
 void DllUnload()
 {
-	Unload = true;
+    Unload = true;
 
-	if (OPostRender)
-	{
-		CG::ULocalPlayer* localPlayer = Utils::GetLocalPlayer();
-		CleanCheat::UnSwapVmtFunction(localPlayer->ViewportClient, POST_RENDER_INDEX, &OPostRender);
-	}
-	
-	CleanCheat::Clear();
+    if (OPostRender)
+    {
+        CG::ULocalPlayer* localPlayer = Utils::GetLocalPlayer();
+        CleanCheat::Hook->UnSwapVmt(localPlayer->ViewportClient, POST_RENDER_INDEX, &OPostRender);
+    }
 
-#if CONSOLE_OUTPUT
-	fclose(ConsoleCOut);
-	//fclose(stdout);
-	FreeConsole();
-#endif
+    CleanCheat::Clear();
+}
+
+void __stdcall ProcessEventHook(CG::UObject* thiz, CG::UFunction* function, void* parms)
+{
+    //LOG("%s", function->GetFullName().c_str());
+    OProcessEvent(thiz, function, parms);
+}
+
+void __stdcall PostRenderHook(CG::UGameViewportClient* gameViewportClient, CG::UCanvas* canvas)
+{
+    // Hook ProcessEvent from game thread, otherwise some games will crash
+    try
+    {
+        if (!Once)
+        {
+            Once = true;
+
+            CleanCheat::Hook->Detour(reinterpret_cast<void**>(&OProcessEvent), reinterpret_cast<void*>(&ProcessEventHook));
+        }
+    }
+    catch (...)
+    {
+        LOG("Error: %s", "Hook 'ProcessEvent' falied");
+    }
+
+    // Unload
+    if (GetAsyncKeyState(UNLOAD_KEY) & 1)
+    {
+        Unload = true;
+        DllUnload();
+        goto Exit;
+    }
+
+    if (Unload)
+        goto Exit;
+
+    // Shared data
+    if (!CleanCheat::SharedData)
+        goto Exit;
+
+    try
+    {
+        CleanCheat::Tick(canvas);
+    }
+    catch (...) {}
+
+Exit:
+    OPostRender(gameViewportClient, canvas);
+}
+
+void MainEntryPoint(HMODULE hModule)
+{
+    if (!CG::InitSdk())
+    {
+        LOG("SDK initialization failed");
+        return;
+    }
+    LOG("SDK Initialized successfully");
+    LOG("ModuleBase: %p", static_cast<void*>(GetModuleHandleA(nullptr)));
+
+    // GWorld
+    CG::UWorld* gWorld = *CG::UWorld::GWorld;
+    if (!gWorld)
+    {
+        LOG("GWorld is nullptr");
+        return;
+    }
+    LOG("GWorld: %p", gWorld);
+
+    // LocalPlayer
+    CG::ULocalPlayer* localPlayer = Utils::GetLocalPlayer();
+    if (!localPlayer)
+    {
+        LOG("localPlayer is nullptr");
+        return;
+    }
+    LOG("LocalPlayer: %p", localPlayer);
+    LOG("ViewportClient : 0x%llx", reinterpret_cast<uintptr_t>(localPlayer->ViewportClient));
+
+    // CleanCheat
+    if (!InitCleanCheat())
+    {
+        LOG("CleanCheat initialization failed");
+        return;
+    }
+
+    // PostRender
+    std::vector<CG::UGameViewportClient*> gameViewportClients = CG::UObject::FindObjects<CG::UGameViewportClient>();
+    LOG("GameViewportClientCount: %d", static_cast<int>(gameViewportClients.size()));
+    
+    CG::UGameViewportClient*& gameViewportClient = gameViewportClients[1]; // Maybe you need to change that number
+    void** gameViewportClientVmt = *reinterpret_cast<void***>(gameViewportClient);
+    LOG("PostRender     : 0x%llx", reinterpret_cast<uintptr_t>(gameViewportClientVmt[POST_RENDER_INDEX]));
+
+    CleanCheat::Hook->SwapVmt(
+        gameViewportClient,
+        POST_RENDER_INDEX,
+        reinterpret_cast<void*>(&PostRenderHook),
+        reinterpret_cast<void**>(&OPostRender));
+
+    // ProcessEvent
+    void** localPlayerVmt = *reinterpret_cast<void***>(localPlayer);
+    OProcessEvent = reinterpret_cast<ProcessEventType>(localPlayerVmt[PROCESS_EVENT_INDEX]);
+    LOG("ProcessEvents  : 0x%llx", reinterpret_cast<uintptr_t>(OProcessEvent));
 }
 
 BOOL APIENTRY DllMain(const HMODULE hModule, const DWORD ulReasonForCall, LPVOID lpReserved)
 {
-	if (ulReasonForCall != DLL_PROCESS_ATTACH)
-		return TRUE;
+    if (ulReasonForCall != DLL_PROCESS_ATTACH)
+        return TRUE;
 
-#if CONSOLE_OUTPUT
-	AllocConsole();
-	freopen_s(&ConsoleCOut, "CONOUT$", "w", stdout);
-#endif
+    bool error = false;
+    try
+    {
+        MainEntryPoint(hModule);
+    }
+    catch (const std::exception& e)
+    {
+        LOG("Error: %s", e.what());
+        error = true;
+    }
+    catch (const std::string& ex)
+    {
+        LOG("Error: %s", ex.c_str());
+        error = true;
+    }
+    catch (...)
+    {
+        LOG("Error!!!!!!!");
+        error = true;
+    }
 
-	bool error = false;
-	try
-	{
-		MainEntryPoint(hModule);
-	}
-	catch (const std::runtime_error& e)
-	{
-#if CONSOLE_OUTPUT
-		LOG("Error: %s", e.what());
-#endif
-		
-		error = true;
-	}
-	catch (const std::exception& e)
-	{
-#if CONSOLE_OUTPUT
-		LOG("Error: %s", e.what());
-#endif
-		
-		error = true;
-	}
-	catch (const std::string& ex)
-	{
-#if CONSOLE_OUTPUT
-		LOG("Error: %s", ex.c_str());
-#endif
-		
-		error = true;
-	}
-	catch (...)
-	{
-#if CONSOLE_OUTPUT
-		LOG("Error!!!!!!!");
-#endif
-		
-		error = true;
-	}
+    if (error)
+    {
+        constexpr int sleep = 5 * 1000;
+        Sleep(sleep);
+        DllUnload();
+    }
 
-	if (error)
-	{
-#if CONSOLE_OUTPUT
-		Sleep(5 * 1000);
-#endif
-		DllUnload();
-	}
-	
-	return TRUE;
+    return TRUE;
 }
-

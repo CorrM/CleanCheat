@@ -3,17 +3,27 @@
 #include "Macros.h"
 #include "FeatureBase.h"
 
+template <typename TType>
 ABSTRACT class RunnerBase
 {
 protected:
-    std::vector<FeatureBase<void>*> _features;
+    std::vector<FeatureBase<TType>*> _features;
 
 public:
     virtual ~RunnerBase() = default;
 
 private:
-    void ExecuteBeforeCallbacks() const;
-    void ExecuteAfterCallback() const;
+    void ExecuteBeforeCallbacks() const
+    {
+        for (FeatureBase<void>* const& feature : _features)
+            feature->BeforeExecute();
+    }
+
+    void ExecuteAfterCallback() const
+    {
+        for (FeatureBase<void>* const& feature : _features)
+            feature->AfterExecute();
+    }
 
 protected:
     virtual void OnExecute() = 0;
@@ -21,7 +31,14 @@ protected:
     /// <summary>
     /// Execute registered features
     /// </summary>
-    void ExecuteFeatures(void* item) const;
+    void ExecuteFeatures(TType* item) const
+    {
+        for (FeatureBase<TType>* const& feature : _features)
+        {
+            if (feature->Condition(item))
+                feature->Execute(item);
+        }
+    }
 
 public:
     /// <summary>
@@ -32,27 +49,35 @@ public:
     /// <summary>
     /// Called evey tick
     /// </summary>
-    void Tick();
+    void Tick()
+    {
+        ExecuteBeforeCallbacks();
+        OnExecute();
+        ExecuteAfterCallback();
+    }
 
     /// <summary>
     /// Register feature
     /// </summary>
-    template <class TFeature>
-    bool RegisterFeature(TFeature* feature);
+    template <class T>
+    bool RegisterFeature(FeatureBase<T>* feature)
+    {
+        if (!feature->IsInitialized())
+            return false;
+
+        _features.push_back(feature);
+
+        return true;
+    }
 
     /// <summary>
-    /// Clear
+    /// Clean
     /// </summary>
-    void Clear();
+    void Clean()
+    {
+        for (FeatureBase<void>* feature : _features)
+            feature->Discard();
+    
+        _features.clear();
+    }
 };
-
-template <class TFeature>
-bool RunnerBase::RegisterFeature(TFeature* feature)
-{
-    if (!feature->IsInitialized())
-        return false;
-
-    _features.push_back(reinterpret_cast<FeatureBase<void>*>(feature));
-
-    return true;
-}

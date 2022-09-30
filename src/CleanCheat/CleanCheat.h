@@ -1,56 +1,104 @@
 ﻿#pragma once
-#include <unordered_map>
 #include <vector>
+#include <thread>
+#include "Macros.h"
 #include "RunnerBase.h"
-#include "SharedDataBase.h"
+#include "MemoryManager.h"
+#include "HookManager.h"
+
+struct CleanCheatOptions
+{
+public:
+    bool UseLogger = false;
+};
 
 class CleanCheat final
 {
 private:
-    static bool _init;
-    static bool _busy;
-    static std::vector<RunnerBase*> _runners;
-    static std::unordered_map<void**, void*> _detours;
-    static SharedDataBase* _sharedData;
+    inline static bool _init = false;
+    inline static bool _busy = false;
+    inline static CleanCheatOptions _options;
+    inline static FILE* _consoleOut = nullptr;
+    inline static std::vector<RunnerBase<void>*> _runners;
 
 public:
-#ifndef SHARED_DATA_TYPE
-    template <class TSharedData>
-    static TSharedData* GetSharedData();
-#else
-    static SHARED_DATA_TYPE* GetSharedData();
-#endif
+    inline static SHARED_DATA_TYPE* SharedData = nullptr;
+    inline static MemoryManager* Memory = nullptr;
+    inline static HookManager* Hook = nullptr;
     
-    static void Init(SharedDataBase* sharedData);
+public:
+    static void Init(const CleanCheatOptions& options)
+    {
+        if (_init)
+            return;
+        _init = true;
+        _options = options;
 
-    template <class TRunner>
-    static bool RegisterRunner(TRunner* runner);
+        if (options.UseLogger)
+        {
+            AllocConsole();
+            freopen_s(&_consoleOut, "CONOUT$", "w", stdout);  // NOLINT(cert-err33-c)
+        }
 
-    static void Tick(void* sharedDataParam);
-    static void Clear();
-    
-    static void SwapVmtFunction(void* instance, int32_t vmtIndex, void* hkFunc, void** outOriginalFunc);
-    static void UnSwapVmtFunction(void* instance, int32_t vmtIndex, void* originalFunc);
-    static bool DetourFunction(void** originalFunctionPointer, void* detourPointer);
-    static bool UnDetourFunction(void** originalFunctionPointer, void* detourPointer);
-    static void UnDetourAll();
+        SharedData = new SHARED_DATA_TYPE();
+        Memory = new MemoryManager();
+        Hook = new HookManager();
+    }
+
+    template <class T>
+    static bool RegisterRunner(RunnerBase<T>* runner)
+    {
+        if (!_init)
+            return false;
+
+        _runners.push_back(reinterpret_cast<RunnerBase<void>*>(runner));
+
+        return true;
+    }
+
+    static void Tick(void* sharedDataTickParam)
+    {
+        if (!_init)
+            return;
+
+        _busy = true;
+        SharedData->Tick(sharedDataTickParam);
+
+        for (RunnerBase<void>*& runner : _runners)
+        {
+            if (runner->Condition())
+                runner->Tick();
+        }
+
+        _busy = false;
+    }
+
+    static void Clear()
+    {
+        _init = false;
+
+        // Wait Tick to finish
+        while (_busy)
+            std::this_thread::sleep_for(std::chrono::milliseconds(2));
+
+        // Logger
+        if (_options.UseLogger)
+        {
+            int _ = fclose(_consoleOut);
+            _consoleOut = nullptr;
+            FreeConsole();
+        }
+
+        // Clean runners
+        for (RunnerBase<void>* runner : _runners)
+            runner->Clean();
+        _runners.clear();
+
+        // Un hook all functions
+        Hook->UnDetourAll();
+
+        SharedData = nullptr;
+        DELETE_HEAP(Memory);
+        DELETE_HEAP(Hook);
+    }
 };
-
-#ifndef SHARED_DATA_TYPE
-template <class TSharedData>
-TSharedData* CleanCheat::GetSharedData()
-{
-    return reinterpret_cast<TSharedData*>(_sharedData);
-}
-#endif
-
-template <class TRunner>
-bool CleanCheat::RegisterRunner(TRunner* runner)
-{
-    if (!_init)
-        return false;
-
-    _runners.push_back(reinterpret_cast<RunnerBase*>(runner));
-
-    return true;
-}

@@ -1,7 +1,7 @@
 #pragma once
 #include <vector>
-#include "../SDK/CoreUObject_Structs.h"
 #include "CleanCheat/FeatureBase.h"
+#include "../SDK/CoreUObject_Structs.h"
 
 class CG::UCanvas;
 class CG::AActor;
@@ -25,7 +25,7 @@ private:
 	void PlayerESP(CG::AWW3Character* player) const;
 
 protected:
-	void OnInit(void* initData) override;
+	bool OnInit(void* initData) override;
 	void OnExecute(CG::AActor* curActor) override;
 
 public:

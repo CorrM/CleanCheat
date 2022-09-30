@@ -1,7 +1,6 @@
 ﻿#include "pch.h"
 #include "Utils.h"
-#include "CleanCheat/CleanCheat.h"
-#include "SharedDataStruct.h"
+#include "CleanCheat.h"
 #include "AimbotFeature.h"
 
 struct BestTargetPlayer
@@ -20,16 +19,15 @@ bool AimbotFeature::CheckVisibility(const CG::ACharacter* const character, const
 {
     static auto kSystemLibrary = CG::UObject::FindObject<CG::UKismetSystemLibrary>("KismetMathLibrary Engine.Default__KismetMathLibrary");
 
-    auto* sharedData = CleanCheat::GetSharedData<SharedDataStruct>();
     if (!character || !character->Mesh)
         return false;
 
     static auto const none = CG::FName();
 
-    if (!sharedData->GController || !sharedData->GController->PlayerCameraManager)
+    if (!CleanCheat::SharedData->GController || !CleanCheat::SharedData->GController->PlayerCameraManager)
         return false;
 
-    CG::FVector const startLoc = sharedData->GController->PlayerCameraManager->GetCameraLocation();
+    CG::FVector const startLoc = CleanCheat::SharedData->GController->PlayerCameraManager->GetCameraLocation();
     CG::FVector const endLoc = character->Mesh->GetSocketLocation(character->Mesh->GetBoneName(boneIndex));
 
     CG::TArray<CG::AActor*> toIgnore{};
@@ -63,8 +61,6 @@ bool AimbotFeature::CheckVisibility(const CG::ACharacter* const character, const
 
 void AimbotFeature::OnExecute(CG::AActor* curActor)
 {
-    auto* sharedData = CleanCheat::GetSharedData<SharedDataStruct>();
-
     if (GetAsyncKeyState(VK_NUMPAD1) & 1)
     {
         LOG("BONEID: %d", _targetBoneId);
@@ -78,28 +74,28 @@ void AimbotFeature::OnExecute(CG::AActor* curActor)
     }
     
     Utils::DrawCircle(
-        sharedData->CurrentCanvas,
-        sharedData->ScreenCenterPos,
+        CleanCheat::SharedData->CurrentCanvas,
+        CleanCheat::SharedData->ScreenCenterPos,
         _radius,
         64,
         _targetCircleColor);
 
-    if (!sharedData->GCharacter || !_targetPlayer)
+    if (!CleanCheat::SharedData->GCharacter || !_targetPlayer)
         return;
 
-    CG::FVector cameraLocation = sharedData->GController->PlayerCameraManager->GetCameraLocation();
+    CG::FVector cameraLocation = CleanCheat::SharedData->GController->PlayerCameraManager->GetCameraLocation();
     CG::FVector targetPlayerHead = _targetPlayer->Mesh->GetBoneWorldPos(_targetBoneId);
     CG::FRotator rotator = (targetPlayerHead - cameraLocation).ToRotator();
 
-    sharedData->GController->ControlRotation = rotator;
-    sharedData->CurrentCanvas->K2_DrawBox(
+    CleanCheat::SharedData->GController->ControlRotation = rotator;
+    CleanCheat::SharedData->CurrentCanvas->K2_DrawBox(
         Utils::WorldToScreen(targetPlayerHead),
         {4.f, 4.f},
         1.0f,
         {255.0f, 255.0f, 0.0f, 255.0f});
 
     auto* player = reinterpret_cast<CG::AWW3Character*>(curActor);
-    if (!player || player == sharedData->GCharacter || player->CurrentHealth <= 0)
+    if (!player || player == CleanCheat::SharedData->GCharacter || player->CurrentHealth <= 0)
         return;
 
     CG::AWW3PlayerState* playerState = player->SavedPlayerState;
@@ -109,7 +105,7 @@ void AimbotFeature::OnExecute(CG::AActor* curActor)
     if (playerState->PlayingState != CG::EWW3PlayingState::EWW3PS_Alive)
         return;
 
-    if (playerState->CurrentSquad->Team->TeamId == sharedData->GCharacter->SavedPlayerState->CurrentSquad->Team->TeamId)
+    if (playerState->CurrentSquad->Team->TeamId == CleanCheat::SharedData->GCharacter->SavedPlayerState->CurrentSquad->Team->TeamId)
         return;
 
     // Hold
@@ -131,10 +127,10 @@ void AimbotFeature::OnExecute(CG::AActor* curActor)
     bool w2Screen;
     CG::FVector2D headPos = Utils::WorldToScreen(player->RootComponent->RelativeLocation, &w2Screen);
     
-    if (w2Screen && Utils::IsInCircle(headPos, sharedData->ScreenCenterPos, _radius) && CheckVisibility(player, _targetBoneId))
+    if (w2Screen && Utils::IsInCircle(headPos, CleanCheat::SharedData->ScreenCenterPos, _radius) && CheckVisibility(player, _targetBoneId))
     {
-        const float distance = sharedData->GCharacter->RootComponent->RelativeLocation.DistanceMeter(player->RootComponent->RelativeLocation);
-        const float distanceInScr = std::abs(sharedData->ScreenCenterPos.Distance(headPos));
+        const float distance = CleanCheat::SharedData->GCharacter->RootComponent->RelativeLocation.DistanceMeter(player->RootComponent->RelativeLocation);
+        const float distanceInScr = std::abs(CleanCheat::SharedData->ScreenCenterPos.Distance(headPos));
 
         if (!LastBestTargetPlayer.Player || LastBestTargetPlayer.DistanceFromCenterOfScreen > distanceInScr || LastBestTargetPlayer.WorldDistance > distance)
         {
@@ -147,11 +143,10 @@ void AimbotFeature::OnExecute(CG::AActor* curActor)
 
 bool AimbotFeature::Condition(CG::AActor* curActor)
 {
-    auto* sharedData = CleanCheat::GetSharedData<SharedDataStruct>();
-    return sharedData
-        && sharedData->CurrentCanvas
-        && sharedData->GWorld
-        && sharedData->GCharacter
+    return CleanCheat::SharedData
+        && CleanCheat::SharedData->CurrentCanvas
+        && CleanCheat::SharedData->GWorld
+        && CleanCheat::SharedData->GCharacter
         && curActor->IsA(CG::AWW3Character::StaticClass());
 }
 

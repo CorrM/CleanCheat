@@ -11,10 +11,10 @@ public:
 	/// <summary>
 	/// Generate random float between `a` and `b`
 	/// </summary>
-	/// <param name="a">Min number</param>
-	/// <param name="b">Max number</param>
-	/// <returns>Random float between `a` and `b`</returns>
-	static float RandomFloat(float a, float b);
+	/// <param name="min">Min number</param>
+	/// <param name="max">Max number</param>
+	/// <returns>Random float between `min` and `max`</returns>
+	static float RandomFloat(float min, float max);
 
 	static bool IsInCircle(const CG::FVector2D& point, const CG::FVector2D& circlePos, float radius);
 

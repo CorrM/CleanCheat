@@ -1,13 +1,10 @@
 ﻿#include "pch.h"
-#include "CleanCheat/CleanCheat.h"
-#include "../SharedDataStruct.h"
+#include "CleanCheat.h"
 #include "LevelActorsRunner.h"
 
 void LevelActorsRunner::OnExecute()
 {
-    SharedDataStruct* sharedData = CleanCheat::GetSharedData<SharedDataStruct>();
-
-    CG::TArray<CG::ULevel*>& levels = sharedData->GWorld->levels;
+    CG::TArray<CG::ULevel*>& levels = CleanCheat::SharedData->GWorld->levels;
     for (int j = 0; j < levels.Count(); j++)
     {
         if (!levels.IsValidIndex(j))
@@ -30,6 +27,5 @@ void LevelActorsRunner::OnExecute()
 
 bool LevelActorsRunner::Condition()
 {
-    SharedDataStruct* sharedData = CleanCheat::GetSharedData<SharedDataStruct>();
-    return sharedData && sharedData->GWorld;
+    return CleanCheat::SharedData && CleanCheat::SharedData->GWorld;
 }

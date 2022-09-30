@@ -1,8 +1,11 @@
 #pragma once
 #include "CleanCheat/SharedDataBase.h"
 
-class SharedData final : public SharedDataBase
+class SharedDataStruct final : public SharedDataBase
 {
+public:
+	int MagicNumber = 50;
+	
 public:
 	/// <summary>
 	/// Called every tick

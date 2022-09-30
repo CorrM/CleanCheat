@@ -1,12 +1,16 @@
 #include "pch.h"
+#include <cstdlib>
+#include <ctime>
 #include "Utils.h"
 
-float Utils::RandomFloat(const float a, const float b)
+float Utils::RandomFloat(const float min, const float max)
 {
+    srand(static_cast<unsigned>(time(nullptr)));
+    
     float random = static_cast<float>(rand()) / static_cast<float>(RAND_MAX);
-    float diff = b - a;
+    float diff = max - min;
     float r = random * diff;
-    return a + r;
+    return min + r;
 }
 
 bool Utils::IsInCircle(const CG::FVector2D& point, const CG::FVector2D& circlePos, const float radius)

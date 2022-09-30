@@ -1,8 +1,7 @@
 #include "pch.h"
 #include <cmath>
-#include "CleanCheat/CleanCheat.h"
+#include "../CleanCheat.h"
 #include "../Utils.h"
-#include "../SharedDataStruct.h"
 #include "ChamsFeature.h"
 
 int HKeyTestYMulti = 0;
@@ -23,11 +22,10 @@ CG::FLinearColor* ChamsFeature::GetPlayerDrawColor(CG::AWW3Character* player)
     static CG::FLinearColor safeColor = {0.780f, 0.137f, 0.721f, 1.0f};
     static CG::FLinearColor dangerColor = {0.6f, 0.0f, 0.0f, 1.0f};
 
-    auto* sharedData = CleanCheat::GetSharedData<SharedDataStruct>();
-    if (!sharedData->GController)
+    if (!CleanCheat::SharedData->GController)
         return nullptr;
 
-    if (sharedData->GController->LineOfSightTo(player, CG::FVector(), false))
+    if (CleanCheat::SharedData->GController->LineOfSightTo(player, CG::FVector(), false))
         return &dangerColor;
 
     return &safeColor;
@@ -35,11 +33,10 @@ CG::FLinearColor* ChamsFeature::GetPlayerDrawColor(CG::AWW3Character* player)
 
 void ChamsFeature::SetLootMaterial(CG::AActor* const actor)
 {
-    auto* sharedData = CleanCheat::GetSharedData<SharedDataStruct>();
-    if (!sharedData)
+    if (!CleanCheat::SharedData)
         return;
 
-    if (!actor || !sharedData->LootMat)
+    if (!actor || !CleanCheat::SharedData->LootMat)
         return;
 
     CG::TArray<CG::UActorComponent*> components = actor->GetComponentsByClass(CG::USkeletalMeshComponent::StaticClass());
@@ -58,12 +55,12 @@ void ChamsFeature::SetLootMaterial(CG::AActor* const actor)
                 if (!materials.IsValidIndex(matIdx))
                     continue;
 
-                if (sharedData->LootMat && materials[matIdx] != sharedData->LootMat)
+                if (CleanCheat::SharedData->LootMat && materials[matIdx] != CleanCheat::SharedData->LootMat)
                 {
                     if (!skeletalMeshComp)
                         continue;
 
-                    skeletalMeshComp->SetMaterial(matIdx, sharedData->LootMat);
+                    skeletalMeshComp->SetMaterial(matIdx, CleanCheat::SharedData->LootMat);
                 }
             }
         }
@@ -78,8 +75,7 @@ bool ChamsFeature::IsValidPlayerState(const CG::AWW3PlayerState* const playerSta
 
 void ChamsFeature::PlayerESP(CG::AWW3Character* const player) const
 {
-    auto* sharedData = CleanCheat::GetSharedData<SharedDataStruct>();
-    if (!player || player == sharedData->GCharacter || player->CurrentHealth <= 0)
+    if (!player || player == CleanCheat::SharedData->GCharacter || player->CurrentHealth <= 0)
         return;
 
     CG::AWW3PlayerState* playerState = player->SavedPlayerState;
@@ -89,7 +85,7 @@ void ChamsFeature::PlayerESP(CG::AWW3Character* const player) const
     if (playerState->PlayingState != CG::EWW3PlayingState::EWW3PS_Alive)
         return;
 
-    if (playerState->CurrentSquad->Team->TeamId == sharedData->GCharacter->SavedPlayerState->CurrentSquad->Team->TeamId)
+    if (playerState->CurrentSquad->Team->TeamId == CleanCheat::SharedData->GCharacter->SavedPlayerState->CurrentSquad->Team->TeamId)
         return;
 
     bool w2ScreenSuccess;
@@ -98,7 +94,7 @@ void ChamsFeature::PlayerESP(CG::AWW3Character* const player) const
         return;
 
     CG::FLinearColor* playerDrawColor = GetPlayerDrawColor(player);
-    const float distance = sharedData->GCharacter->RootComponent->RelativeLocation.DistanceMeter(player->RootComponent->RelativeLocation);
+    const float distance = CleanCheat::SharedData->GCharacter->RootComponent->RelativeLocation.DistanceMeter(player->RootComponent->RelativeLocation);
 
     CG::FVector footBonePos = player->Mesh->GetBoneWorldPos(static_cast<int>(CG::EBone_SKM_CharacterMesh_01_01::b_Spine));
     footBonePos.Z -= 130.f;
@@ -108,7 +104,7 @@ void ChamsFeature::PlayerESP(CG::AWW3Character* const player) const
     // Draw
     if (distance > 100.f)
     {
-        sharedData->CurrentCanvas->K2_DrawBox(
+        CleanCheat::SharedData->CurrentCanvas->K2_DrawBox(
             rootPos,
             {5.f, 5.f},
             1.0f,
@@ -133,7 +129,7 @@ void ChamsFeature::PlayerESP(CG::AWW3Character* const player) const
                     continue;
                 }
 
-                sharedData->CurrentCanvas->K2_DrawLine(
+                CleanCheat::SharedData->CurrentCanvas->K2_DrawLine(
                     previousBone,
                     bonePos,
                     1.0f,
@@ -145,12 +141,12 @@ void ChamsFeature::PlayerESP(CG::AWW3Character* const player) const
 
     // Text block
     // Hold Z or distance > 35
-    if ((GetAsyncKeyState(0x5A) >> 15 || distance > 35) && Utils::IsInCircle(rootPos, sharedData->ScreenCenterPos, _moreInfoRadius))
+    if ((GetAsyncKeyState(0x5A) >> 15 || distance > 35) && Utils::IsInCircle(rootPos, CleanCheat::SharedData->ScreenCenterPos, _moreInfoRadius))
     {
         // Name
         {
-            sharedData->CurrentCanvas->K2_DrawText(
-                sharedData->RobotoFont,
+            CleanCheat::SharedData->CurrentCanvas->K2_DrawText(
+                CleanCheat::SharedData->RobotoFont,
                 playerState->PlayerNamePrivate,
                 textStartPos,
                 CG::FVector2D(1.0f, 1.0f),
@@ -170,8 +166,8 @@ void ChamsFeature::PlayerESP(CG::AWW3Character* const player) const
             distanceStr.erase(distanceStr.find_last_not_of('0'), std::string::npos);
             distanceStr.append(L"M");
 
-            sharedData->CurrentCanvas->K2_DrawText(
-                sharedData->RobotoFont,
+            CleanCheat::SharedData->CurrentCanvas->K2_DrawText(
+                CleanCheat::SharedData->RobotoFont,
                 distanceStr.c_str(),
                 textStartPos + CG::FVector2D(0.0f, 14.0f),
                 CG::FVector2D(1.0f, 1.0f),
@@ -187,7 +183,7 @@ void ChamsFeature::PlayerESP(CG::AWW3Character* const player) const
     }
 }
 
-void ChamsFeature::OnInit(void* initData)
+bool ChamsFeature::OnInit(void* initData)
 {
     _boneVector =
     {
@@ -195,16 +191,16 @@ void ChamsFeature::OnInit(void* initData)
         {55, 13, 14, 15, 1, 12, 8},
         {1, 107, 102}
     };
+
+    return true;
 }
 
 void ChamsFeature::OnExecute(CG::AActor* curActor)
 {
-    auto* sharedData = CleanCheat::GetSharedData<SharedDataStruct>();
-    
     // Rest material
-    if (!sharedData->GCharacter || !sharedData->GCharacter->RootComponent)
+    if (!CleanCheat::SharedData->GCharacter || !CleanCheat::SharedData->GCharacter->RootComponent)
     {
-        sharedData->LootMat = nullptr;
+        CleanCheat::SharedData->LootMat = nullptr;
         return;
     }
 
@@ -216,12 +212,12 @@ void ChamsFeature::OnExecute(CG::AActor* curActor)
     {
         CG::FVector2D actorPos = Utils::WorldToScreen(curActor->RootComponent->RelativeLocation);
 
-        if (Utils::IsInCircle(actorPos, sharedData->ScreenCenterPos, _moreInfoRadius))
+        if (Utils::IsInCircle(actorPos, CleanCheat::SharedData->ScreenCenterPos, _moreInfoRadius))
         {
             actorPos.Y += static_cast<float>(HKeyTestYMulti++) * 12.0f;
 
-            sharedData->CurrentCanvas->K2_DrawText(
-                sharedData->RobotoFont,
+            CleanCheat::SharedData->CurrentCanvas->K2_DrawText(
+                CleanCheat::SharedData->RobotoFont,
                 S2Wc(curActor->GetFullName().c_str()),
                 actorPos,
                 CG::FVector2D(1, 1),
@@ -251,8 +247,7 @@ void ChamsFeature::OnExecute(CG::AActor* curActor)
 
 bool ChamsFeature::Condition(CG::AActor* curActor)
 {
-    auto* sharedData = CleanCheat::GetSharedData<SharedDataStruct>();
-    return sharedData && sharedData->CurrentCanvas && sharedData->GWorld;
+    return CleanCheat::SharedData && CleanCheat::SharedData->CurrentCanvas && CleanCheat::SharedData->GWorld;
 }
 
 void ChamsFeature::BeforeExecute()
