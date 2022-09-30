@@ -15,16 +15,17 @@ jobs:
         uses: vimtor/action-zip@v1
         with:
           files: src/CleanCheat/ src/CleanCheat.h
+          recursive: true
           dest: release.zip
       
       - uses: actions/upload-artifact@v1
         with:
-          name: release.zip
+          name: release
           path: ${{ github.workspace }}/release.zip
     
       # Upload
-      - name: Upload Release
-        uses: ncipollo/release-action@v1
-        with:
-          artifacts: "release.zip"
-          token: ${{ secrets.GITHUB_TOKEN }}
+      #- name: Upload Release
+      #  uses: ncipollo/release-action@v1
+      #  with:
+      #    artifacts: "release.zip"
+      #    token: ${{ secrets.GITHUB_TOKEN }}
