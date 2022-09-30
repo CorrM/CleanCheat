@@ -30,4 +30,3 @@ jobs:
         with:
           artifacts: ${{ github.workspace }}/src/release.zip
           token: ${{ secrets.GITHUB_TOKEN }}
-          name: "Last Version"
