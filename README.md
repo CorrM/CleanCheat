@@ -6,14 +6,13 @@ Game cheat base and clean architecture for your next cheat
 * [CleanCheat](#cleancheat)
   * [Features](#features)
   * [Options](#options)
-    * [UseLogger option:](#uselogger-option)
+    * [UseLogger option](#uselogger-option)
   * [Usage](#usage)
     * [Step1: Adding includes](#step1-adding-includes)
-      * [Note:](#note)
     * [Step2: Initialization](#step2-initialization)
-      * [Initialize CleanCheat:](#initialize-cleancheat-)
-      * [Initialize Features:](#initialize-features-)
-      * [Initialize Runners:](#initialize-runners-)
+      * [Initialize CleanCheat](#initialize-cleancheat)
+      * [Initialize Features](#initialize-features)
+      * [Initialize Runners](#initialize-runners)
     * [Step3: Use](#step3-use)
       * [Use Shared data](#use-shared-data)
       * [Use Logger](#use-logger)
@@ -24,6 +23,7 @@ Game cheat base and clean architecture for your next cheat
         * [Memory pattern scan](#memory-pattern-scan)
   * [Concepts](#concepts)
     * [Shared data](#shared-data)
+      * [Shared data basic setup](#shared-data-basic-setup)
     * [Runner and Feature](#runner-and-feature)
       * [Runner](#runner)
         * [Runner life cycle](#runner-life-cycle)
@@ -52,7 +52,7 @@ Game cheat base and clean architecture for your next cheat
 
 Options presented by `CleanCheatOptions` struct that are passed when [initialize CleanCheat](#initialize-cleancheat)
 
-### UseLogger option:
+### UseLogger option
 
 Enable console logging by [](#use-logger)
 
@@ -72,7 +72,7 @@ In cpp/h files you need to include `CleanCheat.h` **NOT** `CleanCheat/CleanCheat
 
 ### Step2: Initialization
 
-#### Initialize CleanCheat:
+#### Initialize CleanCheat
 
 You need to pick your options and pass it to `CleanCheat::Init` function
 ```c++
@@ -82,7 +82,7 @@ options.UseLogger = true;
 CleanCheat::Init(options);
 ```
 
-#### Initialize Features:
+#### Initialize Features
 **Features used in the example**
 ([BasicFeature](src/Features/BasicFeature.h), [TestFeature](src/Features/TestFeature.h))
 ```c++
@@ -95,7 +95,7 @@ TestFeature test;
 test.Init();
 ```
 
-#### Initialize Runners:
+#### Initialize Runners
 
 Features must to be initialized before registers it in any runner
 [BasicRunner](src/Runners/BasicRunner.h)
