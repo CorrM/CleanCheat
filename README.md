@@ -1,6 +1,6 @@
 # CleanCheat
 
-Game cheat base and clean architecture for your next cheat
+Game cheat base and clean architecture for your next cheat 
 
 <!-- TOC -->
 * [CleanCheat](#cleancheat)
