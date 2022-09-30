@@ -242,7 +242,7 @@ for (int i = 0; i < OBJECT_COUNT; ++i)
 
 #### Runner
 
-Runner concept present task that can be spited into tasks([Features](#feature)) with providing input to that tasks to check and handle.
+Runner concept present task that can be splited into tasks([Features](#feature)) with providing input to that tasks to check and handle.
 
 In our example runner will present the loop `for (int i = 0; i < OBJECT_COUNT; ++i)` and iterator `Object` as input for our [Features](#feature).
 ```c++
