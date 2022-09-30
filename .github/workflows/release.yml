@@ -15,7 +15,7 @@ jobs:
         uses: vimtor/action-zip@v1
         with:
           files: src/CleanCheat/ src/CleanCheat.h
-          recursive: true
+          recursive: false
           dest: release.zip
       
       - uses: actions/upload-artifact@v1
