@@ -14,7 +14,7 @@ jobs:
       - name: Archive Release
         uses: papeloto/action-zip@v1
         with:
-          files: src/CleanCheat/ src/CleanCheat.h
+          files: src/CleanCheat src/CleanCheat.h
           dest: release.zip
       
       - uses: actions/upload-artifact@v1
