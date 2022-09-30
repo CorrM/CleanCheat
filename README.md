@@ -1,6 +1,35 @@
 # CleanCheat
 Game cheat base and clean architecture for your next cheat
 
+<!-- TOC -->
+* [CleanCheat](#cleancheat)
+  * [Features](#features)
+  * [Options](#options)
+    * [UseLogger option:](#uselogger-option)
+  * [Usage](#usage)
+    * [Step1: Adding includes](#step1-adding-includes)
+      * [Note:](#note-)
+    * [Step2: Initialization](#step2-initialization)
+      * [Initialize CleanCheat:](#initialize-cleancheat)
+      * [Initialize Features:](#initialize-features)
+      * [Initialize Runners:](#initialize-runners)
+    * [Step3: Use](#step3-use)
+      * [Use Shared data](#use-shared-data)
+      * [Use Logger](#use-logger)
+      * [Use hooks](#use-hooks)
+        * [Hook by swap VMT method address](#hook-by-swap-vmt-method-address)
+        * [Hook by detour function](#hook-by-detour-function)
+      * [Use memory](#use-memory)
+        * [Memory pattern scan](#memory-pattern-scan)
+  * [Concepts](#concepts)
+    * [Runner](#runner)
+    * [Feature](#feature)
+      * [Feature life cycle](#feature-life-cycle)
+  * [Examples](#examples)
+  * [Credits:](#credits)
+  * [Third-party libraries:](#third-party-libraries)
+<!-- TOC -->
+
 ## Features
 - Clean architecture
 - Force your code to be maintainable and easy to read
@@ -41,7 +70,7 @@ options.UseLogger = true;
 CleanCheat::Init(options);
 ```
 
-#### Initialize [Features](#feature):
+#### Initialize Features:
 [BasicFeature](src/Features/BasicFeature.h)
 [TestFeature](src/Features/TestFeature.h)
 ```c++
@@ -54,7 +83,7 @@ TestFeature test;
 test.Init();
 ```
 
-#### Initialize [Runners](#runner):
+#### Initialize Runners:
 Features must to be initialized before registers it in any runner
 [BasicRunner](src/Runners/BasicRunner.h)
 
@@ -240,8 +269,8 @@ There are a number of examples that demonstrate various aspects of using `CleanC
 | [InternalUnrealEngine](examples/UnrealInternalExample/dllmain.cpp) | Shows how to use with [CheatGear](https://github.com/CorrM/CG) |
 
 
-## Credits:
+## Credits
 [CorrM](https://github.com/CorrM)
 
-## Third-party libraries:
+## Third-party libraries
 [Detours](https://github.com/microsoft/Detours)
