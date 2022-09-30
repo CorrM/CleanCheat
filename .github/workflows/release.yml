@@ -12,19 +12,19 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - name: Archive Release
-        uses: papeloto/action-zip@v1
+        uses: vimtor/action-zip@v1
         with:
-          files: src/CleanCheat src/CleanCheat.h
+          files: src/CleanCheat/ src/CleanCheat.h
           dest: release.zip
       
       - uses: actions/upload-artifact@v1
         with:
-          name: my-artifact
+          name: release.zip
           path: ${{ github.workspace }}/release.zip
     
       # Upload
       - name: Upload Release
         uses: ncipollo/release-action@v1
         with:
-          artifacts: "${{ github.workspace }}/release.zip"
+          artifacts: "release.zip"
           token: ${{ secrets.GITHUB_TOKEN }}
