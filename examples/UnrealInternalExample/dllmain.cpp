@@ -64,7 +64,7 @@ void DllUnload()
         CleanCheat::Hook->UnSwapVmt(localPlayer->ViewportClient, POST_RENDER_INDEX, &OPostRender);
     }
 
-    CleanCheat::Clear();
+    CleanCheat::Discard();
 }
 
 void __stdcall ProcessEventHook(CG::UObject* thiz, CG::UFunction* function, void* parms)

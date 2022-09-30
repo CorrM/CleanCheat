@@ -1,4 +1,5 @@
 # CleanCheat
+
 Game cheat base and clean architecture for your next cheat
 
 <!-- TOC -->
@@ -8,11 +9,11 @@ Game cheat base and clean architecture for your next cheat
     * [UseLogger option:](#uselogger-option)
   * [Usage](#usage)
     * [Step1: Adding includes](#step1-adding-includes)
-      * [Note:](#note-)
+      * [Note:](#note)
     * [Step2: Initialization](#step2-initialization)
-      * [Initialize CleanCheat:](#initialize-cleancheat)
-      * [Initialize Features:](#initialize-features)
-      * [Initialize Runners:](#initialize-runners)
+      * [Initialize CleanCheat:](#initialize-cleancheat-)
+      * [Initialize Features:](#initialize-features-)
+      * [Initialize Runners:](#initialize-runners-)
     * [Step3: Use](#step3-use)
       * [Use Shared data](#use-shared-data)
       * [Use Logger](#use-logger)
@@ -22,15 +23,19 @@ Game cheat base and clean architecture for your next cheat
       * [Use memory](#use-memory)
         * [Memory pattern scan](#memory-pattern-scan)
   * [Concepts](#concepts)
-    * [Runner](#runner)
-    * [Feature](#feature)
-      * [Feature life cycle](#feature-life-cycle)
+    * [Shared data](#shared-data)
+    * [Runner and Feature](#runner-and-feature)
+      * [Runner](#runner)
+        * [Runner life cycle](#runner-life-cycle)
+      * [Feature](#feature)
+        * [Feature life cycle](#feature-life-cycle)
   * [Examples](#examples)
-  * [Credits:](#credits)
-  * [Third-party libraries:](#third-party-libraries)
+  * [Credits](#credits)
+  * [Third-party libraries](#third-party-libraries)
 <!-- TOC -->
 
 ## Features
+
 - Clean architecture
 - Force your code to be maintainable and easy to read
 - Easy to use, initialize and unload(_dll unload_)
@@ -44,24 +49,31 @@ Game cheat base and clean architecture for your next cheat
   - Value scan (`TODO`)
 
 ## Options
+
 Options presented by `CleanCheatOptions` struct that are passed when [initialize CleanCheat](#initialize-cleancheat)
+
 ### UseLogger option:
+
 Enable console logging by [](#use-logger)
 
 ## Usage
+
 To use `CleanCheat` you need to do 3 simple steps
 
 ### Step1: Adding includes
+
 At first your project need to know about `CleanCheat`. For that you have to:  
 
 - Copy `src/CleanCheat` and `src/CleanCheat.h` to your project dir
 - Add `#include "CleanCheat.h"` into your cpp/h files (if you have precompiled headers it is a good place to add this include there)
 
-#### Note:
+**Note**:  
 In cpp/h files you need to include `CleanCheat.h` **NOT** `CleanCheat/CleanCheat.h`
 
 ### Step2: Initialization
+
 #### Initialize CleanCheat:
+
 You need to pick your options and pass it to `CleanCheat::Init` function
 ```c++
 CleanCheatOptions options;
@@ -71,8 +83,8 @@ CleanCheat::Init(options);
 ```
 
 #### Initialize Features:
-[BasicFeature](src/Features/BasicFeature.h)
-[TestFeature](src/Features/TestFeature.h)
+**Features used in the example**
+([BasicFeature](src/Features/BasicFeature.h), [TestFeature](src/Features/TestFeature.h))
 ```c++
 int initData = 1;
 
@@ -84,6 +96,7 @@ test.Init();
 ```
 
 #### Initialize Runners:
+
 Features must to be initialized before registers it in any runner
 [BasicRunner](src/Runners/BasicRunner.h)
 
@@ -92,20 +105,41 @@ BasicRunner basicRunner;
 basicRunner.RegisterFeature(&basic);
 basicRunner.RegisterFeature(&test);
 
+// Register the runner
 CleanCheat::RegisterRunner(&basicRunner);
 ```
 
 ### Step3: Use
+
 You need to include `CleanCheat.h` where ever you want to access `CleanCheat` then you can access what [Features](#Features) it provide,
 for sure that's after [Initialize CleanCheat](#initialize-cleancheat)
 
+`CleanCheat` do all it's operation from `CleanCheat::Tick` so it needs to be called from any place that get called at least once per frame:
+
+**MessageHandler**  
+```c++
+while (!(GetAsyncKeyState(VK_END) & 1))
+{
+    CleanCheat::Tick(&initData);
+    std::this_thread::sleep_for(std::chrono::milliseconds(1000));
+}
+
+CleanCheat::Discard();
+```
+
+**Frame hook**:  
+[InternalUnrealExample](#examples) use `PostRender` hooked function to do it.  
+You can hook any (DirectX, OpenGL, Vulkan, etc) that called every frame
+
 #### Use Shared data
+
 You can access **shared data** related stuff using `CleanCheat::SharedData`
 ```c++
 CleanCheat::SharedData->ANY_DATA;
 ```
 
 #### Use Logger
+
 You can log by `LOG` macro that's only work if [UseLogger option](#uselogger-option) are `ture`
 
 ```c++
@@ -127,31 +161,51 @@ Under the hood it use `std::printf` function with format `[FILE_NAME:FUNC_NAME:C
 ```
 
 #### Use hooks
+
 You can access **hooking** related stuff using `CleanCheat::Hook`
 
 ##### Hook by swap VMT method address
+
 ```c++
 void* outOrignalMethodAddress = nullptr;
 CleanCheat::Hook->SwapVmt(INSTANCE_ADDRESS, METHOD_INDEX, &HOOK_FUNC, &outOrignalMethodAddress);
 ```
 
 ##### Hook by detour function
+
 ```c++
 void* functionAddress = 0x123456CD;
 CleanCheat::Hook->Detour(&functionAddress, &HOOK_FUNC);
 ```
 
 #### Use memory
+
 You can access **memory** related stuff using `CleanCheat::Memory`
 
 ##### Memory pattern scan
+
 ```c++
 // Look for "48 89 5C 24" in main module, and maximum result 2
 std::vector<void*> addrs = CleanCheat::Memory->PatternScan("48 89 5C 24", 2);
 ```
 
 ## Concepts
-`CleanCheat` have two main concepts [Runner](#runner) and [Feature](#feature) and they are here to simplify that problem:
+
+### Shared data
+
+The place where you would store global status and shared data, you could also add functions too.
+As every code need it's own collection of shared data you will need to make your own class.
+
+#### Shared data basic setup
+
+1. Make a class that inherits from `SharedDataBase`
+2. Include its header in `CleanCheat.h` next to `// Your SharedData class`
+3. Edit `SHARED_DATA_TYPE` in `CleanCheat/Macros.h` with your shared data class name (default is `SharedDataStruct`)
+
+Then you can [use shared data](#use-shared-data)
+
+### Runner and Feature
+
 Let's say i have level objects loop that have like 10k object, and every **type** of objects have different task to do,
 if i have `PlayerObject` and `WeaponObject`, and i want to make ESP for players and zero recoil for weapons,
 then that is a different tasks but related to same task(object iterate).
@@ -186,7 +240,8 @@ for (int i = 0; i < OBJECT_COUNT; ++i)
 }
 ```
 
-### Runner
+#### Runner
+
 Runner concept present task that can be spited into tasks([Features](#feature)) with providing input to that tasks to check and handle.
 
 In our example runner will present the loop `for (int i = 0; i < OBJECT_COUNT; ++i)` and iterator `Object` as input for our [Features](#feature).
@@ -210,7 +265,16 @@ void LevelObjectsRunner::OnExecute()
 }
 ```
 
-### Feature
+##### Runner life cycle
+
+| Func       | Description                                                      |
+|------------|------------------------------------------------------------------|
+| OnExecute  | Called by CleanCheat every tick                                  |
+| Condition  | Called before OnExecute by CleanCheat to determine run it or not |
+| Discard    | Called by CleanCheat when CleanCheat itself get discarded        |
+
+#### Feature
+
 Feature concept present [runner](#runner) sub-task that can do **one task** with **one input** after pass a **condition**.
 So you can't pass same feature to multi runner (unexpected behavior).
 Feature are there to spilt runner code and make it easy to maintain easy to read.
@@ -249,7 +313,7 @@ void WeaponZeroRecoilFeature::OnExecute(Object* curObject)
 }
 ```
 
-#### Feature life cycle
+##### Feature life cycle
 
 | Func          | Description                                                                                    |
 |---------------|------------------------------------------------------------------------------------------------|
@@ -261,6 +325,7 @@ void WeaponZeroRecoilFeature::OnExecute(Object* curObject)
 | Discard       | Called by runner when runner itself get discarded                                              |
 
 ## Examples
+
 There are a number of examples that demonstrate various aspects of using `CleanCheat`. They can be found in the examples folder:
 
 | Example                                                            | Description                                                    |
@@ -270,7 +335,9 @@ There are a number of examples that demonstrate various aspects of using `CleanC
 
 
 ## Credits
+
 [CorrM](https://github.com/CorrM)
 
 ## Third-party libraries
+
 [Detours](https://github.com/microsoft/Detours)

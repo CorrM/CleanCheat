@@ -13,13 +13,13 @@ public:
     virtual ~RunnerBase() = default;
 
 private:
-    void ExecuteBeforeCallbacks() const
+    void ExecuteBeforeFeaturesCallbacks() const
     {
         for (FeatureBase<void>* const& feature : _features)
             feature->BeforeExecute();
     }
 
-    void ExecuteAfterCallback() const
+    void ExecuteAfterFeaturesCallbacks() const
     {
         for (FeatureBase<void>* const& feature : _features)
             feature->AfterExecute();
@@ -51,9 +51,9 @@ public:
     /// </summary>
     void Tick()
     {
-        ExecuteBeforeCallbacks();
+        ExecuteBeforeFeaturesCallbacks();
         OnExecute();
-        ExecuteAfterCallback();
+        ExecuteAfterFeaturesCallbacks();
     }
 
     /// <summary>
@@ -71,9 +71,9 @@ public:
     }
 
     /// <summary>
-    /// Clean
+    /// Discard
     /// </summary>
-    void Clean()
+    void Discard()
     {
         for (FeatureBase<void>* feature : _features)
             feature->Discard();

@@ -30,9 +30,6 @@ int main(int argc, char* argv[])
     basicRunner.RegisterFeature(&test);
     
     CleanCheat::RegisterRunner(&basicRunner);
-
-    
-    std::vector<void*> addr1 = CleanCheat::Memory->PatternScan("48 89 5C 24", 2);
     
     while (!(GetAsyncKeyState(VK_END) & 1))
     {
@@ -40,8 +37,8 @@ int main(int argc, char* argv[])
         std::this_thread::sleep_for(std::chrono::milliseconds(1000));
     }
 
-    // Clean, No need to delete features and runners as the stack will take care of that
-    CleanCheat::Clear();
+    // Discard, No need to delete features and runners as the stack will take care of that
+    CleanCheat::Discard();
     
     return EXIT_SUCCESS;
 }

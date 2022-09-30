@@ -73,7 +73,7 @@ public:
         _busy = false;
     }
 
-    static void Clear()
+    static void Discard()
     {
         _init = false;
 
@@ -89,9 +89,9 @@ public:
             FreeConsole();
         }
 
-        // Clean runners
+        // Discard runners
         for (RunnerBase<void>* runner : _runners)
-            runner->Clean();
+            runner->Discard();
         _runners.clear();
 
         // Un hook all functions
