@@ -64,7 +64,7 @@ To use `CleanCheat` you need to do 3 simple steps
 
 At first your project need to know about `CleanCheat`. For that you have to:  
 
-- Copy `src/CleanCheat` and `src/CleanCheat.h` to your project dir
+- Copy `src/CleanCheat` and `src/CleanCheat.h` OR download [Latest Release](https://github.com/CorrM/CleanCheat/releases/latest) to your project dir
 - Add `#include "CleanCheat.h"` into your cpp/h files (if you have precompiled headers it is a good place to add this include there)
 
 **Note**:  
