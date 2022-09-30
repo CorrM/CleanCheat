@@ -19,14 +19,14 @@ jobs:
           path: CleanCheat/ CleanCheat.h
           filename: release.zip
       
-      - uses: actions/upload-artifact@v1
-        with:
-          name: release
-          path: ${{ github.workspace }}/src/release.zip
+      #- uses: actions/upload-artifact@v1
+      #  with:
+      #    name: release
+      #    path: ${{ github.workspace }}/src/release.zip
     
       # Upload
-      #- name: Upload Release
-      #  uses: ncipollo/release-action@v1
-      #  with:
-      #    artifacts: "release.zip"
-      #    token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Upload Release
+        uses: ncipollo/release-action@v1
+        with:
+          artifacts: ${{ github.workspace }}/src/release.zip
+          token: ${{ secrets.GITHUB_TOKEN }}
