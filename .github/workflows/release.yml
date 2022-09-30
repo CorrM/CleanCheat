@@ -14,8 +14,9 @@ jobs:
       - name: Archive Release
         uses: thedoctor0/zip-release@main
         with:
-          type: 'zip'
-          path: src/CleanCheat/ src/CleanCheat.h
+          type: "zip"
+          directory: src
+          path: CleanCheat/ CleanCheat.h
           filename: release.zip
       
       - uses: actions/upload-artifact@v1
