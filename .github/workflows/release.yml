@@ -12,11 +12,11 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - name: Archive Release
-        uses: vimtor/action-zip@v1
+        uses: thedoctor0/zip-release@main
         with:
-          files: src/CleanCheat/ src/CleanCheat.h
-          recursive: false
-          dest: release.zip
+          type: 'zip'
+          path: src/CleanCheat/ src/CleanCheat.h
+          filename: release.zip
       
       - uses: actions/upload-artifact@v1
         with:
