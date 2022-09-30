@@ -65,6 +65,9 @@ void DllUnload()
     }
 
     CleanCheat::Discard();
+
+    DELETE_HEAP(Chams);
+    DELETE_HEAP(Aimbot);
 }
 
 void __stdcall ProcessEventHook(CG::UObject* thiz, CG::UFunction* function, void* parms)

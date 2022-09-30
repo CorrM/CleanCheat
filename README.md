@@ -154,7 +154,7 @@ int main(int argc, char* argv[])
 }
 ```
 
-**Output**:
+**Output**:  
 Under the hood it use `std::printf` function with format `[FILE_NAME:FUNC_NAME:CODE_LINE] USER_MESSAGE`
 ```
 [Main.cpp:main:11] Hello 'CleanCheat' users
