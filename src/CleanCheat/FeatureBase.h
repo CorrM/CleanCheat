@@ -1,15 +1,18 @@
 ﻿#pragma once
 #include "Macros.h"
+#include "FeatureSettings.h"
 
-template <typename TType>
+template <typename TType, class TSettings = FeatureSettings>
 ABSTRACT class FeatureBase
 {
 private:
     bool _init = false;
 
 public:
+    TSettings* Settings;
+
+public:
     virtual ~FeatureBase() = default;
-    virtual void Discard() { }
 
 protected:
     virtual void OnExecute(TType* param) = 0;
@@ -20,6 +23,15 @@ protected:
     }
 
 public:
+    /// <summary>
+    /// Determinate initialization status
+    /// </summary>
+    /// <returns>`True` if initialized, otherwise `False`</returns>
+    bool IsInitialized() const
+    {
+        return _init;
+    }
+    
     /// <summary>
     /// Condition runner will use to determine will execute this feature or not
     /// </summary>
@@ -47,15 +59,6 @@ public:
     }
 
     /// <summary>
-    /// Determinate initialization status
-    /// </summary>
-    /// <returns>`True` if initialized, otherwise `False`</returns>
-    bool IsInitialized() const
-    {
-        return _init;
-    }
-
-    /// <summary>
     /// Initialize
     /// </summary>
     bool Init(void* initData = nullptr)
@@ -64,6 +67,18 @@ public:
             return false;
         _init = true;
 
+        Settings = new TSettings();
+        Settings->OnInit();
+        
         return OnInit(initData);
+    }
+
+    /// <summary>
+    /// Discard
+    /// </summary>
+    virtual void Discard()
+    {
+        delete Settings;
+        Settings = nullptr;
     }
 };

@@ -9,5 +9,5 @@ void BasicFeature::OnExecute(int* param)
 
 bool BasicFeature::Condition(int* param)
 {
-    return true;
+    return Settings->Enable;
 }

@@ -25,6 +25,7 @@
     <ClCompile Include="Runners\BasicRunner.cpp" />
     <ClCompile Include="SharedDataStruct.cpp" />
     <ClInclude Include="CleanCheat.h" />
+    <ClInclude Include="CleanCheat\FeatureSettings.h" />
     <ClInclude Include="CleanCheat\Macros.h" />
     <ClInclude Include="CleanCheat\HookManager.h" />
     <ClInclude Include="CleanCheat\MemoryManager.h" />

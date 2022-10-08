@@ -7,7 +7,7 @@ template <typename TType>
 ABSTRACT class RunnerBase
 {
 protected:
-    std::vector<FeatureBase<TType>*> _features;
+    std::vector<FeatureBase<TType, int8_t>*> _features;
 
 public:
     virtual ~RunnerBase() = default;
@@ -35,7 +35,7 @@ protected:
     {
         for (FeatureBase<TType>* const& feature : _features)
         {
-            if (feature->Condition(item))
+            if (feature->Settings->Enable && feature->Condition(item))
                 feature->Execute(item);
         }
     }
