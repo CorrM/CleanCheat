@@ -341,3 +341,11 @@ There are a number of examples that demonstrate various aspects of using `CleanC
 ## Third-party libraries
 
 [Detours](https://github.com/microsoft/Detours)
+
+## Change Log
+
+##### 0.0.2
+- Add feature settings
+
+##### 0.0.1
+- First release
