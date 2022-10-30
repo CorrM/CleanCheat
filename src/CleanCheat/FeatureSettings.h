@@ -12,5 +12,14 @@ public:
     virtual ~FeatureSettings() = default;
     
 protected:
-    virtual void OnInit() { }
+    virtual bool OnInit()
+    {
+        return true;
+    }
+
+public:
+    bool Init()
+    {
+        return OnInit();
+    }
 };

@@ -68,9 +68,8 @@ public:
         _init = true;
 
         Settings = new TSettings();
-        Settings->OnInit();
         
-        return OnInit(initData);
+        return Settings->Init() && OnInit(initData);
     }
 
     /// <summary>
