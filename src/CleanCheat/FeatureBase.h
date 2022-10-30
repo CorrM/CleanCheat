@@ -78,7 +78,6 @@ public:
     /// </summary>
     virtual void Discard()
     {
-        delete Settings;
-        Settings = nullptr;
+        DELETE_HEAP(Settings);
     }
 };

@@ -7,7 +7,7 @@ template <typename TType>
 ABSTRACT class RunnerBase
 {
 protected:
-    std::vector<FeatureBase<TType, int8_t>*> _features;
+    std::vector<FeatureBase<TType>*> _features;
 
 public:
     virtual ~RunnerBase() = default;
@@ -42,7 +42,7 @@ protected:
 
 public:
     /// <summary>
-    /// Condition runner will use to determine will execute this feature or not
+    /// Condition CleanCheat will use to determine will execute this runner or not
     /// </summary>
     virtual bool Condition() = 0;
 
