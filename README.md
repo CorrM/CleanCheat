@@ -74,18 +74,19 @@ Copy CleanCheat repo or add as git submodule (`git submodule add https://github.
 
 Edit `.vcxproj` file:
 
-Add
+Add this to ItemGroup that have `ClCompile` tags
 ```
 <ClCompile Include=".\CleanCheat\src\CleanCheat\**\*.cpp">
     <PrecompiledHeader>NotUsing</PrecompiledHeader>
 </ClCompile>
 ```
 
+Add this to ItemGroup that have `ClInclude` tags
 ```
 <ClInclude Include=".\CleanCheat\src\CleanCheat\**\*.h" />
 ```
 
-**Then**
+**Now include CleanCheat in your project**
 
 - Add `#include "CleanCheat.h"` into your cpp/h files (if you have precompiled headers it is a good place to add this include there)
 - [Initialize shared data](#shared-data-basic-setup) if you will use it
