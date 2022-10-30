@@ -74,14 +74,14 @@ Copy CleanCheat repo or add as git submodule (`git submodule add https://github.
 
 Edit `.vcxproj` file:
 
-Add this to ItemGroup that have `ClCompile` tags
+Add this to ItemGroup that have `ClCompile` tags ([Exmaple](https://github.com/CorrM/CleanCheat/blob/main/examples/UnrealInternalExample/UnrealInternalExample.vcxproj#L176-L178))
 ```
 <ClCompile Include=".\CleanCheat\src\CleanCheat\**\*.cpp">
     <PrecompiledHeader>NotUsing</PrecompiledHeader>
 </ClCompile>
 ```
 
-Add this to ItemGroup that have `ClInclude` tags
+Add this to ItemGroup that have `ClInclude` tags ([Example](https://github.com/CorrM/CleanCheat/blob/main/examples/UnrealInternalExample/UnrealInternalExample.vcxproj#L198))
 ```
 <ClInclude Include=".\CleanCheat\src\CleanCheat\**\*.h" />
 ```
@@ -367,6 +367,9 @@ There are a number of examples that demonstrate various aspects of using `CleanC
 [Detours](https://github.com/microsoft/Detours)
 
 ## Change Log
+
+##### 0.0.3
+- Fix `cannot convert` bug
 
 ##### 0.0.2
 - Add feature settings
