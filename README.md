@@ -5,8 +5,6 @@ Game cheat base and clean architecture for your next cheat
 <!-- TOC -->
 * [CleanCheat](#cleancheat)
   * [Features](#features)
-  * [Options](#options)
-    * [UseLogger option](#uselogger-option)
   * [Usage](#usage)
     * [Step1: Adding includes](#step1-adding-includes)
     * [Step2: Initialization](#step2-initialization)
@@ -21,6 +19,8 @@ Game cheat base and clean architecture for your next cheat
         * [Hook by detour function](#hook-by-detour-function)
       * [Use memory](#use-memory)
         * [Memory pattern scan](#memory-pattern-scan)
+  * [Options](#options)
+    * [UseLogger option](#uselogger-option)
   * [Concepts](#concepts)
     * [Shared data](#shared-data)
       * [Shared data basic setup](#shared-data-basic-setup)
@@ -47,14 +47,6 @@ Game cheat base and clean architecture for your next cheat
 - [Memory](#use-memory):
   - Pattern scan
   - Value scan (`TODO`)
-
-## Options
-
-Options presented by `CleanCheatOptions` struct that are passed when [initialize CleanCheat](#initialize-cleancheat)
-
-### UseLogger option
-
-Enable console logging by [](#use-logger)
 
 ## Usage
 
@@ -212,6 +204,14 @@ You can access **memory** related stuff using `CleanCheat::Memory`
 // Look for "48 89 5C 24" in main module, and maximum result 2
 std::vector<void*> addrs = CleanCheat::Memory->PatternScan("48 89 5C 24", 2);
 ```
+
+## Options
+
+Options presented by `CleanCheatOptions` struct that are passed when [initialize CleanCheat](#initialize-cleancheat)
+
+### UseLogger option
+
+Enable console logging by [](#use-logger)
 
 ## Concepts
 
