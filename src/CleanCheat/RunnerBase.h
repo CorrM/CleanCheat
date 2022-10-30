@@ -59,13 +59,13 @@ public:
     /// <summary>
     /// Register feature
     /// </summary>
-    template <class T>
-    bool RegisterFeature(FeatureBase<T>* feature)
+    template <class T, class S = FeatureSettings>
+    bool RegisterFeature(FeatureBase<T, S>* feature)
     {
         if (!feature->IsInitialized())
             return false;
 
-        _features.push_back(feature);
+        _features.push_back(reinterpret_cast<FeatureBase<TType>*>(feature));
 
         return true;
     }
