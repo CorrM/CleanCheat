@@ -62,9 +62,31 @@ To use `CleanCheat` you need to do 3 simple steps
 
 ### Step1: Adding includes
 
-At first your project need to know about `CleanCheat`. For that you have to:  
+At first your project need to know about `CleanCheat`.
 
-- Copy `src/CleanCheat` and `src/CleanCheat.h` OR download [Latest Release](https://github.com/CorrM/CleanCheat/releases/latest) to your project dir
+**First option**:
+
+Copy `src/CleanCheat` and `src/CleanCheat.h` OR download [Latest Release](https://github.com/CorrM/CleanCheat/releases/latest) to your project dir
+
+**Second option**:
+
+Copy CleanCheat repo or add as git submodule (`git submodule add https://github.com/CorrM/CleanCheat.git CleanCheat`)
+
+Edit `.vcxproj` file:
+
+Add
+```
+<ClCompile Include=".\CleanCheat\src\CleanCheat\**\*.cpp">
+    <PrecompiledHeader>NotUsing</PrecompiledHeader>
+</ClCompile>
+```
+
+```
+<ClInclude Include=".\CleanCheat\src\CleanCheat\**\*.h" />
+```
+
+**Then**
+
 - Add `#include "CleanCheat.h"` into your cpp/h files (if you have precompiled headers it is a good place to add this include there)
 - [Initialize shared data](#shared-data-basic-setup) if you will use it
 
