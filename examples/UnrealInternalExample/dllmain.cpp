@@ -120,6 +120,13 @@ Exit:
 
 void MainEntryPoint(HMODULE hModule)
 {
+    // CleanCheat
+    if (!InitCleanCheat())
+    {
+        LOG("CleanCheat initialization failed");
+        return;
+    }
+    
     if (!CG::InitSdk())
     {
         LOG("SDK initialization failed");
@@ -146,13 +153,6 @@ void MainEntryPoint(HMODULE hModule)
     }
     LOG("LocalPlayer: %p", localPlayer);
     LOG("ViewportClient : 0x%llx", reinterpret_cast<uintptr_t>(localPlayer->ViewportClient));
-
-    // CleanCheat
-    if (!InitCleanCheat())
-    {
-        LOG("CleanCheat initialization failed");
-        return;
-    }
 
     // PostRender
     std::vector<CG::UGameViewportClient*> gameViewportClients = CG::UObject::FindObjects<CG::UGameViewportClient>();
