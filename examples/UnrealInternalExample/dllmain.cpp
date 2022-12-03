@@ -108,15 +108,8 @@ void __stdcall PostRenderHook(CG::UGameViewportClient* gameViewportClient, CG::U
     if (!CleanCheat::SharedData)
         goto Exit;
 
-    try
-    {
-        //canvas->K2_DrawLine({0.0, 0.0}, {50.0, 50.0}, 1.f, {1.f, 1.f, 1.f, 1.f});
-        CleanCheat::Tick(canvas);
-    }
-    catch (...)
-    {
-        LOG("ERROR");
-    }
+    //canvas->K2_DrawLine({0.0, 0.0}, {50.0, 50.0}, 1.f, {1.f, 1.f, 1.f, 1.f});
+    CleanCheat::Tick(canvas);
 
 Exit:
     OPostRender(gameViewportClient, canvas);
