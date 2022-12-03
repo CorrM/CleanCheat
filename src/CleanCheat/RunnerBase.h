@@ -36,7 +36,16 @@ protected:
         for (FeatureBase<TType>* const& feature : _features)
         {
             if (feature->Settings->Enable && feature->Condition(item))
-                feature->Execute(item);
+            {
+                try
+                {
+                    feature->Execute(item);
+                }
+                catch (...)
+                {
+                    LOG("ERROR");
+                }
+            }
         }
     }
 
