@@ -43,6 +43,7 @@ protected:
                 }
                 catch (...)
                 {
+                    // TODO: Add feature name
                     LOG("ERROR");
                 }
             }
