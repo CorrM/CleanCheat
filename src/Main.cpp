@@ -8,22 +8,23 @@
 
 int main(int argc, char* argv[])
 {
-    LOG("Hello %s users", "CleanCheat");
-    int initData = 1;
-
     // CleanCheat
     CleanCheatOptions options;
     options.UseLogger = true;
     
     CleanCheat::Init(options);
     
+    // Simple log
+    LOG("Hello %s users", "CleanCheat");
+    
     // Features
+    int initData = 1;
     BasicFeature basic;
     basic.Init(&initData);
-
+    
     TestFeature test;
     test.Init();
-
+    
     // Runners
     BasicRunner basicRunner;
     basicRunner.RegisterFeature(&basic);
@@ -36,7 +37,7 @@ int main(int argc, char* argv[])
         CleanCheat::Tick(&initData);
         std::this_thread::sleep_for(std::chrono::milliseconds(1000));
     }
-
+    
     // Discard, No need to delete features and runners as the stack will take care of that
     CleanCheat::Discard();
     
