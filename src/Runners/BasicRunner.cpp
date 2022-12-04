@@ -4,7 +4,7 @@ int i = 0;
 
 void BasicRunner::OnExecute()
 {
-    ExecuteFeatures(&i);
+    ExecuteTasks(&i);
     ++i;
 }
 

@@ -2,10 +2,8 @@
 #include "Utils.h"
 #include "SharedDataStruct.h"
 
-void SharedDataStruct::Tick(void* data)
+void SharedDataStruct::Tick(CG::UCanvas* canvas)
 {
-    CG::UCanvas* const canvas = static_cast<CG::UCanvas*>(data);
-    
     CurrentCanvas = canvas;
 
     if (!RobotoFont)

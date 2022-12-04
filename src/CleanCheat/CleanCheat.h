@@ -56,7 +56,8 @@ public:
         return true;
     }
 
-    static void Tick(void* sharedDataTickParam)
+    template <typename TSharedTickParamType>
+    static void Tick(TSharedTickParamType* sharedDataTickParam)
     {
         if (!_init)
             return;

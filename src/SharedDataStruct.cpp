@@ -1,6 +1,6 @@
 #include "SharedDataStruct.h"
 
-void SharedDataStruct::Tick(void* data)
+void SharedDataStruct::Tick(int* data)
 {
-    const int dataValue = *static_cast<int*>(data);
+    const int dataValue = *data;
 }

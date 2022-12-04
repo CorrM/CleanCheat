@@ -20,7 +20,7 @@ void LevelActorsRunner::OnExecute()
             if (!curActor)
                 continue;
 
-            ExecuteFeatures(curActor);
+            ExecuteTasks(curActor);
         }
     }
 }

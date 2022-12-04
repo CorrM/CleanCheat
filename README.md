@@ -125,42 +125,7 @@ basicRunner.RegisterFeature(&test);
 CleanCheat::RegisterRunner(&basicRunner);
 ```
 
-#### Full Initialize
-
-```c++
-// CleanCheat
-CleanCheatOptions options;
-options.UseLogger = true;
-
-CleanCheat::Init(options);
-
-// Simple log
-LOG("Hello %s users", "CleanCheat");
-
-// Features
-int initData = 1;
-BasicFeature basic;
-basic.Init(&initData);
-
-TestFeature test;
-test.Init();
-
-// Runners
-BasicRunner basicRunner;
-basicRunner.RegisterFeature(&basic);
-basicRunner.RegisterFeature(&test);
-
-CleanCheat::RegisterRunner(&basicRunner);
-
-while (!(GetAsyncKeyState(VK_END) & 1))
-{
-    CleanCheat::Tick(&initData);
-    std::this_thread::sleep_for(std::chrono::milliseconds(1000));
-}
-
-// Discard, No need to delete features and runners as the stack will take care of that
-CleanCheat::Discard();
-```
+Check [examples](#examples) for full initialize
 
 ### Step3: Use
 
@@ -333,6 +298,10 @@ void LevelObjectsRunner::OnExecute()
 | OnExecute  | Called by CleanCheat every tick                                  |
 | Condition  | Called before OnExecute by CleanCheat to determine run it or not |
 | Discard    | Called by CleanCheat when CleanCheat itself get discarded        |
+
+#### DataProvider
+
+TODO
 
 #### Feature
 

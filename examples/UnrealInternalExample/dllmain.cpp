@@ -19,6 +19,7 @@ bool Working = false;
 
 ChamsFeature* Chams = nullptr;
 AimbotFeature* Aimbot = nullptr;
+LevelActorsRunner* ActorRunner = nullptr;
 
 bool InitCleanCheat()
 {
@@ -29,18 +30,25 @@ bool InitCleanCheat()
     CleanCheat::Init(options);
     
     // Features
+    bool featuresReg = true;
     Chams = new ChamsFeature();
-    Chams->Init();
+    featuresReg &= Chams->Init();
 
     Aimbot = new AimbotFeature();
-    Aimbot->Init();
+    featuresReg &= Aimbot->Init();
 
+    if (!featuresReg)
+    {
+        LOG("Features initialize failed");
+        return false;
+    }
+    
     // Runners
     bool actorFeaturesReg = true;
-    auto* actorRunner = new LevelActorsRunner();
-    
-    actorFeaturesReg &= actorRunner->RegisterFeature(Chams);
-    actorFeaturesReg &= actorRunner->RegisterFeature(Aimbot);
+    ActorRunner = new LevelActorsRunner();
+
+    actorFeaturesReg &= ActorRunner->RegisterFeature(Chams);
+    actorFeaturesReg &= ActorRunner->RegisterFeature(Aimbot);
 
     if (!actorFeaturesReg)
     {
@@ -49,7 +57,7 @@ bool InitCleanCheat()
     }
 
     bool regRunners = true;
-    regRunners &= CleanCheat::RegisterRunner(actorRunner);
+    regRunners &= CleanCheat::RegisterRunner(ActorRunner);
 
     return regRunners;
 }
@@ -68,6 +76,7 @@ void DllUnload()
 
     DELETE_HEAP(Chams);
     DELETE_HEAP(Aimbot);
+    DELETE_HEAP(ActorRunner);
 }
 
 void __stdcall ProcessEventHook(CG::UObject* thiz, CG::UFunction* function, void* parms)

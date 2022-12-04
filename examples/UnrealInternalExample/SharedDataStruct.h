@@ -2,7 +2,9 @@
 #include "CleanCheat/SharedDataBase.h"
 #include "SDK/CoreUObject_Structs.h"
 
-class SharedDataStruct final : public SharedDataBase
+class CG::UCanvas;
+
+class SharedDataStruct final : public SharedDataBase<CG::UCanvas>
 {
 public:
 	class CG::UWorld* GWorld = nullptr;
@@ -18,6 +20,6 @@ public:
 	/// <summary>
 	/// Called once every frame
 	/// </summary>
-	/// <param name="data">PostRender canvas</param>
-	void Tick(void* data) override;
+	/// <param name="canvas">PostRender canvas</param>
+	void Tick(CG::UCanvas* canvas) override;
 };

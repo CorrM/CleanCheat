@@ -19,12 +19,14 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="DataProviders\BasicDataProvider.cpp" />
     <ClCompile Include="Features\BasicFeature.cpp" />
     <ClCompile Include="Features\TestFeature.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="Runners\BasicRunner.cpp" />
     <ClCompile Include="SharedDataStruct.cpp" />
     <ClInclude Include="CleanCheat.h" />
+    <ClInclude Include="CleanCheat\DataProviderBase.h" />
     <ClInclude Include="CleanCheat\FeatureSettings.h" />
     <ClInclude Include="CleanCheat\Macros.h" />
     <ClInclude Include="CleanCheat\HookManager.h" />
@@ -36,7 +38,9 @@
     <ClCompile Include="CleanCheat\Libs\Detours\modules.cpp" />
     <ClInclude Include="CleanCheat\CleanCheat.h" />
     <ClInclude Include="CleanCheat\FeatureBase.h" />
+    <ClInclude Include="CleanCheat\RunnerTaskBase.h" />
     <ClInclude Include="CleanCheat\SharedDataBase.h" />
+    <ClInclude Include="DataProviders\BasicDataProvider.h" />
     <ClInclude Include="Features\BasicFeature.h" />
     <ClInclude Include="Features\TestFeature.h" />
     <ClInclude Include="Runners\BasicRunner.h" />

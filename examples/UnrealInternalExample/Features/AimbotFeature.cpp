@@ -141,6 +141,11 @@ void AimbotFeature::OnExecute(CG::AActor* curActor)
     }
 }
 
+std::wstring AimbotFeature::Name()
+{
+    return L"AimbotFeature";
+}
+
 bool AimbotFeature::Condition(CG::AActor* curActor)
 {
     return CleanCheat::SharedData

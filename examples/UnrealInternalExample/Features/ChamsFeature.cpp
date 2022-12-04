@@ -183,7 +183,7 @@ void ChamsFeature::PlayerESP(CG::AWW3Character* const player) const
     }
 }
 
-bool ChamsFeature::OnInit(void* initData)
+bool ChamsFeature::OnInitialize(void* initData)
 {
     _boneVector =
     {
@@ -243,6 +243,11 @@ void ChamsFeature::OnExecute(CG::AActor* curActor)
         PlayerESP(player);
         return;
     }
+}
+
+std::wstring ChamsFeature::Name()
+{
+    return L"ChamsFeature";
 }
 
 bool ChamsFeature::Condition(CG::AActor* curActor)

@@ -25,10 +25,11 @@ private:
 	void PlayerESP(CG::AWW3Character* player) const;
 
 protected:
-	bool OnInit(void* initData) override;
+	bool OnInitialize(void* initData) override;
 	void OnExecute(CG::AActor* curActor) override;
 
 public:
+	std::wstring Name() override;
 	bool Condition(CG::AActor* curActor) override;
 	void BeforeExecute() override;
 };

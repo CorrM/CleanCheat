@@ -1,6 +1,7 @@
 ﻿#pragma once
 #include "Macros.h"
 
+template <typename TInit>
 ABSTRACT class SharedDataBase
 {
 public:
@@ -10,5 +11,5 @@ public:
     /// <summary>
     /// Called every tick
     /// </summary>
-    virtual void Tick(void* data) = 0;
+    virtual void Tick(TInit* data) = 0;
 };
