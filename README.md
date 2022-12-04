@@ -125,6 +125,43 @@ basicRunner.RegisterFeature(&test);
 CleanCheat::RegisterRunner(&basicRunner);
 ```
 
+#### Full Initialize
+
+```c++
+// CleanCheat
+CleanCheatOptions options;
+options.UseLogger = true;
+
+CleanCheat::Init(options);
+
+// Simple log
+LOG("Hello %s users", "CleanCheat");
+
+// Features
+int initData = 1;
+BasicFeature basic;
+basic.Init(&initData);
+
+TestFeature test;
+test.Init();
+
+// Runners
+BasicRunner basicRunner;
+basicRunner.RegisterFeature(&basic);
+basicRunner.RegisterFeature(&test);
+
+CleanCheat::RegisterRunner(&basicRunner);
+
+while (!(GetAsyncKeyState(VK_END) & 1))
+{
+    CleanCheat::Tick(&initData);
+    std::this_thread::sleep_for(std::chrono::milliseconds(1000));
+}
+
+// Discard, No need to delete features and runners as the stack will take care of that
+CleanCheat::Discard();
+```
+
 ### Step3: Use
 
 You need to include `CleanCheat.h` where ever you want to access `CleanCheat` then you can access what [Features](#Features) it provide,
