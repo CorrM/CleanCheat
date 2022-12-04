@@ -63,12 +63,29 @@ public:
             return;
 
         _busy = true;
-        SharedData->Tick(sharedDataTickParam);
+        
+        try
+        {
+            SharedData->Tick(sharedDataTickParam);
+        }
+        catch (...)
+        {
+            LOG("CleanCheat ERROR (Tick): SharedData throws unhandled exception");
+        }
 
         for (RunnerBase<void>*& runner : _runners)
         {
             if (runner->Condition())
-                runner->Tick();
+            {
+                try
+                {
+                    runner->Tick();
+                }
+                catch (...)
+                {
+                    LOG("CleanCheat ERROR (Tick): Runner(%s) throws unhandled exception", runner->Name().c_str());
+                }
+            }
         }
 
         _busy = false;

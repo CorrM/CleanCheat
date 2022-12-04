@@ -25,6 +25,11 @@ void LevelActorsRunner::OnExecute()
     }
 }
 
+std::string LevelActorsRunner::Name()
+{
+    return "LevelActorsRunner";
+}
+
 bool LevelActorsRunner::Condition()
 {
     return CleanCheat::SharedData && CleanCheat::SharedData->GWorld;

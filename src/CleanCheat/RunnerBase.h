@@ -26,7 +26,7 @@ private:
             }
             catch (...)
             {
-                LOG("ERROR (BeforeExecute): DataProvider(%ls) throws unhandled exception", dataProvider->Name().c_str());
+                LOG("Runner ERROR (BeforeExecute): DataProvider(%s) throws unhandled exception", dataProvider->Name().c_str());
             }
         }
 
@@ -38,7 +38,7 @@ private:
             }
             catch (...)
             {
-                LOG("ERROR (BeforeExecute): Feature(%ls) throws unhandled exception", feature->Name().c_str());
+                LOG("Runner ERROR (BeforeExecute): Feature(%s) throws unhandled exception", feature->Name().c_str());
             }
         }
     }
@@ -53,7 +53,7 @@ private:
             }
             catch (...)
             {
-                LOG("ERROR (AfterExecute): DataProvider(%ls) throws unhandled exception", dataProvider->Name().c_str());
+                LOG("Runner ERROR (AfterExecute): DataProvider(%s) throws unhandled exception", dataProvider->Name().c_str());
             }
         }
 
@@ -65,7 +65,7 @@ private:
             }
             catch (...)
             {
-                LOG("ERROR (AfterExecute): Feature(%ls) throws unhandled exception", feature->Name().c_str());
+                LOG("Runner ERROR (AfterExecute): Feature(%s) throws unhandled exception", feature->Name().c_str());
             }
         }
     }
@@ -86,7 +86,7 @@ protected:
             }
             catch (...)
             {
-                LOG("ERROR (ExecuteTasks): DataProvider(%ls) throws unhandled exception", dataProviders->Name().c_str());
+                LOG("Runner ERROR (ExecuteTasks): DataProvider(%s) throws unhandled exception", dataProviders->Name().c_str());
             }
         }
 
@@ -100,13 +100,15 @@ protected:
                 }
                 catch (...)
                 {
-                    LOG("ERROR (ExecuteTasks): Feature(%ls) throws unhandled exception", feature->Name().c_str());
+                    LOG("Runner ERROR (ExecuteTasks): Feature(%s) throws unhandled exception", feature->Name().c_str());
                 }
             }
         }
     }
 
 public:
+    virtual std::string Name() = 0;
+
     /// <summary>
     /// Condition CleanCheat will use to determine will execute this runner or not
     /// </summary>

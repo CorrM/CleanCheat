@@ -8,6 +8,11 @@ void BasicRunner::OnExecute()
     ++i;
 }
 
+std::string BasicRunner::Name()
+{
+    return "BasicRunner";
+}
+
 bool BasicRunner::Condition()
 {
     return true;
