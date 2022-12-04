@@ -1,7 +1,7 @@
 #include "pch.h"
 #include <cmath>
 #include "../CleanCheat.h"
-#include "../Utils.h"
+#include "../CleanCheatUtils.h"
 #include "ChamsFeature.h"
 
 int HKeyTestYMulti = 0;
@@ -89,7 +89,7 @@ void ChamsFeature::PlayerESP(CG::AWW3Character* const player) const
         return;
 
     bool w2ScreenSuccess;
-    CG::FVector2D rootPos = Utils::WorldToScreen(player->RootComponent->RelativeLocation, &w2ScreenSuccess);
+    CG::FVector2D rootPos = CleanCheatUtils::WorldToScreen(player->RootComponent->RelativeLocation, &w2ScreenSuccess);
     if (!w2ScreenSuccess)
         return;
 
@@ -98,7 +98,7 @@ void ChamsFeature::PlayerESP(CG::AWW3Character* const player) const
 
     CG::FVector footBonePos = player->Mesh->GetBoneWorldPos(static_cast<int>(CG::EBone_SKM_CharacterMesh_01_01::b_Spine));
     footBonePos.Z -= 130.f;
-    CG::FVector2D textStartPos = {rootPos.X, Utils::WorldToScreen(footBonePos).Y};
+    CG::FVector2D textStartPos = {rootPos.X, CleanCheatUtils::WorldToScreen(footBonePos).Y};
 
     //SetLootMaterial(player);
     // Draw
@@ -119,7 +119,7 @@ void ChamsFeature::PlayerESP(CG::AWW3Character* const player) const
 
             for (const int& bone : part)
             {
-                CG::FVector2D bonePos = Utils::WorldToScreen(player->Mesh->GetBoneWorldPos(bone));
+                CG::FVector2D bonePos = CleanCheatUtils::WorldToScreen(player->Mesh->GetBoneWorldPos(bone));
                 if (bonePos.X == 0.0f && bonePos.Y == 0.0f)
                     break;
 
@@ -141,7 +141,7 @@ void ChamsFeature::PlayerESP(CG::AWW3Character* const player) const
 
     // Text block
     // Hold Z or distance > 35
-    if ((GetAsyncKeyState(0x5A) >> 15 || distance > 35) && Utils::IsInCircle(rootPos, CleanCheat::SharedData->ScreenCenterPos, _moreInfoRadius))
+    if ((GetAsyncKeyState(0x5A) >> 15 || distance > 35) && CleanCheatUtils::IsInCircle(rootPos, CleanCheat::SharedData->ScreenCenterPos, _moreInfoRadius))
     {
         // Name
         {
@@ -210,9 +210,9 @@ void ChamsFeature::OnExecute(CG::AActor* curActor)
     // H Key
     if (GetAsyncKeyState(0x48) >> 15)
     {
-        CG::FVector2D actorPos = Utils::WorldToScreen(curActor->RootComponent->RelativeLocation);
+        CG::FVector2D actorPos = CleanCheatUtils::WorldToScreen(curActor->RootComponent->RelativeLocation);
 
-        if (Utils::IsInCircle(actorPos, CleanCheat::SharedData->ScreenCenterPos, _moreInfoRadius))
+        if (CleanCheatUtils::IsInCircle(actorPos, CleanCheat::SharedData->ScreenCenterPos, _moreInfoRadius))
         {
             actorPos.Y += static_cast<float>(HKeyTestYMulti++) * 12.0f;
 

@@ -1,7 +1,7 @@
 ﻿#pragma once
 
-#include "MySharedData.h" // Your SharedData class
 #include "CleanCheat/RunnersCollectionBase.h"
+#include "MySharedData.h" // Your SharedData class
 #include "Runners/BasicRunner.h"
 
 // SETTINGS

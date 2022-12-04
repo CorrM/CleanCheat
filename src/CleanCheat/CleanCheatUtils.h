@@ -1,7 +1,7 @@
 ﻿#pragma once
 #include <vector>
 
-class Utils final
+class CleanCheatUtils final
 {
 public:
     template <typename TStruct>

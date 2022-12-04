@@ -1,5 +1,5 @@
 ﻿#include "pch.h"
-#include "Utils.h"
+#include "CleanCheatUtils.h"
 #include "CleanCheat.h"
 #include "AimbotFeature.h"
 
@@ -73,7 +73,7 @@ void AimbotFeature::OnExecute(CG::AActor* curActor)
         --_targetBoneId;
     }
     
-    Utils::DrawCircle(
+    CleanCheatUtils::DrawCircle(
         CleanCheat::SharedData->CurrentCanvas,
         CleanCheat::SharedData->ScreenCenterPos,
         _radius,
@@ -89,7 +89,7 @@ void AimbotFeature::OnExecute(CG::AActor* curActor)
 
     CleanCheat::SharedData->GController->ControlRotation = rotator;
     CleanCheat::SharedData->CurrentCanvas->K2_DrawBox(
-        Utils::WorldToScreen(targetPlayerHead),
+        CleanCheatUtils::WorldToScreen(targetPlayerHead),
         {4.f, 4.f},
         1.0f,
         {255.0f, 255.0f, 0.0f, 255.0f});
@@ -125,9 +125,9 @@ void AimbotFeature::OnExecute(CG::AActor* curActor)
         return;
 
     bool w2Screen;
-    CG::FVector2D headPos = Utils::WorldToScreen(player->RootComponent->RelativeLocation, &w2Screen);
+    CG::FVector2D headPos = CleanCheatUtils::WorldToScreen(player->RootComponent->RelativeLocation, &w2Screen);
     
-    if (w2Screen && Utils::IsInCircle(headPos, CleanCheat::SharedData->ScreenCenterPos, _radius) && CheckVisibility(player, _targetBoneId))
+    if (w2Screen && CleanCheatUtils::IsInCircle(headPos, CleanCheat::SharedData->ScreenCenterPos, _radius) && CheckVisibility(player, _targetBoneId))
     {
         const float distance = CleanCheat::SharedData->GCharacter->RootComponent->RelativeLocation.DistanceMeter(player->RootComponent->RelativeLocation);
         const float distanceInScr = std::abs(CleanCheat::SharedData->ScreenCenterPos.Distance(headPos));

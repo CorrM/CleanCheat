@@ -42,7 +42,7 @@ public:
 
         // Runner
         _runners.clear();
-        std::vector<uintptr_t> runners = Utils::CollectPointersAddress<RunnersCollection>(&Runners);
+        std::vector<uintptr_t> runners = CleanCheatUtils::CollectPointersAddress<RunnersCollection>(Runners);
         for (uintptr_t& runnerAddress : runners)
         {
             auto* runner = reinterpret_cast<RunnerBase<void>*>(runnerAddress);
@@ -117,8 +117,10 @@ public:
         // Un hook all functions
         Hook->UnDetourAll();
 
-        SharedData = nullptr;
+        // Free memory
         DELETE_HEAP(Memory);
         DELETE_HEAP(Hook);
+        DELETE_HEAP(Runners);
+        DELETE_HEAP(SharedData);
     }
 };

@@ -185,27 +185,27 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="SDK\BasicTypes_Package.cpp" />
-    <ClCompile Include="SDK\Bones_Package.cpp" />
-    <ClCompile Include="SDK\CoreUObject_Package.cpp" />
-    <ClCompile Include="SDK\Engine_Package.cpp" />
-    <ClCompile Include="SDK\WW3_Package.cpp" />
-    <ClCompile Include="Runners\LevelActorsRunner.cpp" />
+    <ClCompile Include="SDK\BasicTypes_Package.cpp"/>
+    <ClCompile Include="SDK\Bones_Package.cpp"/>
+    <ClCompile Include="SDK\CoreUObject_Package.cpp"/>
+    <ClCompile Include="SDK\Engine_Package.cpp"/>
+    <ClCompile Include="SDK\WW3_Package.cpp"/>
+    <ClCompile Include="Runners\LevelActorsRunner.cpp"/>
     <ClCompile Include="MySharedData.cpp"/>
-    <ClCompile Include="Utils.cpp" />
+    <ClCompile Include="CleanCheatUtils.cpp"/>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\src\CleanCheat\**\*.h" />
-    <ClInclude Include="CleanCheat.h" />
-    <ClInclude Include="Features\AimbotFeature.h" />
-    <ClInclude Include="Features\ChamsFeature.h" />
-    <ClInclude Include="framework.h" />
-    <ClInclude Include="Global.h" />
-    <ClInclude Include="pch.h" />
-    <ClInclude Include="Runners\LevelActorsRunner.h" />
-    <ClInclude Include="SDK.h" />
+    <ClInclude Include="..\..\src\CleanCheat\**\*.h"/>
+    <ClInclude Include="CleanCheat.h"/>
+    <ClInclude Include="Features\AimbotFeature.h"/>
+    <ClInclude Include="Features\ChamsFeature.h"/>
+    <ClInclude Include="framework.h"/>
+    <ClInclude Include="Global.h"/>
+    <ClInclude Include="pch.h"/>
+    <ClInclude Include="Runners\LevelActorsRunner.h"/>
+    <ClInclude Include="SDK.h"/>
     <ClInclude Include="MySharedData.h"/>
-    <ClInclude Include="Utils.h" />
+    <ClInclude Include="CleanCheatUtils.h"/>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -5,7 +5,7 @@
 #define DEG2RAD(x)  ((float)(x) * (float)(M_PI_F / 180.f))
 #define RAD2DEG(x)  ((float)(x) * (float)(180.f / M_PI_F))
 
-class Utils final
+class CleanCheatUtils final
 {
 public:
 	/// <summary>

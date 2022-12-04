@@ -1,5 +1,5 @@
 #include "pch.h"
-#include "Utils.h"
+#include "CleanCheatUtils.h"
 #include "MySharedData.h"
 
 void MySharedData::Tick(CG::UCanvas* canvas)
@@ -16,7 +16,7 @@ void MySharedData::Tick(CG::UCanvas* canvas)
     if (!GWorld)
         return;
 
-    CG::ULocalPlayer* localPlayer = Utils::GetLocalPlayer();
+    CG::ULocalPlayer* localPlayer = CleanCheatUtils::GetLocalPlayer();
     if (!localPlayer)
         return;
 

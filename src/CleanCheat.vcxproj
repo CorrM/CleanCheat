@@ -21,15 +21,15 @@
   <ItemGroup>
     <ClCompile Include="DataProviders\BasicDataProvider.cpp" />
     <ClCompile Include="Runners\BasicRunner.cpp"/>
-    <ClCompile Include="Features\BasicFeature.cpp" />
-    <ClCompile Include="Features\TestFeature.cpp" />
-    <ClCompile Include="Main.cpp" />
+    <ClCompile Include="Features\BasicFeature.cpp"/>
+    <ClCompile Include="Features\TestFeature.cpp"/>
+    <ClCompile Include="Main.cpp"/>
     <ClCompile Include="MySharedData.cpp"/>
-    <ClInclude Include="CleanCheat.h" />
+    <ClInclude Include="CleanCheat.h"/>
     <ClInclude Include="CleanCheatSettings.h"/>
-    <ClInclude Include="CleanCheat\DataProviderBase.h" />
+    <ClInclude Include="CleanCheat\DataProviderBase.h"/>
     <ClInclude Include="CleanCheat\DataProviderOptionsBase.h"/>
-    <ClInclude Include="CleanCheat\FeatureSettings.h" />
+    <ClInclude Include="CleanCheat\FeatureSettings.h"/>
     <ClInclude Include="CleanCheat\Macros.h"/>
     <ClInclude Include="CleanCheat\HookManager.h"/>
     <ClInclude Include="CleanCheat\MemoryManager.h"/>
@@ -45,7 +45,7 @@
     <ClInclude Include="CleanCheat\RunnerTaskBase.h"/>
     <ClInclude Include="CleanCheat\RunnerFeaturesCollectionBase.h"/>
     <ClInclude Include="CleanCheat\SharedDataBase.h"/>
-    <ClInclude Include="CleanCheat\Utils.h"/>
+    <ClInclude Include="CleanCheat\CleanCheatUtils.h"/>
     <ClInclude Include="DataProviders\BasicDataProvider.h"/>
     <ClInclude Include="Features\BasicFeature.h"/>
     <ClInclude Include="Features\TestFeature.h"/>

@@ -10,25 +10,32 @@
 
 int main(int argc, char* argv[])
 {
-    // # CleanCheat
-    CleanCheatOptions options;
-    options.UseLogger = true;
-    
-    CleanCheat::Init(options);
-
-    // # Basic runner
+    // Runner
     BasicRunner* basicRunner = CleanCheat::Runners->Basic;
     
     // DataProviders
-    basicRunner->DataProviders->Basic->Init();
+    bool initChecker = true;
+    initChecker &= basicRunner->DataProviders->Basic->Init();
     
     // Features
     int initData = 1;
-    basicRunner->Features->Basic->Init(&initData);
-    basicRunner->Features->Test->Init();
+    initChecker &= basicRunner->Features->Basic->Init(&initData);
+    initChecker &= basicRunner->Features->Test->Init();
 
     // Init runner after its tasks
-    basicRunner->Init();
+    initChecker &= basicRunner->Init();
+
+    // CleanCheat
+    CleanCheatOptions options;
+    options.UseLogger = true;
+    
+    initChecker &= CleanCheat::Init(options);
+
+    if (!initChecker)
+    {
+        LOG("ERROR: Can't initialize");
+        return EXIT_FAILURE;
+    }
     
     // # Simple log
     LOG("Hello %s users, press %s key to exit", "CleanCheat", "END");

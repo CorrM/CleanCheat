@@ -1,6 +1,6 @@
 #include "pch.h"
 #include "Global.h"
-#include "Utils.h"
+#include "CleanCheatUtils.h"
 
 #include "CleanCheat.h"
 #include "Runners/LevelActorsRunner.h"
@@ -68,7 +68,7 @@ void DllUnload()
 
     if (OPostRender)
     {
-        CG::ULocalPlayer* localPlayer = Utils::GetLocalPlayer();
+        CG::ULocalPlayer* localPlayer = CleanCheatUtils::GetLocalPlayer();
         CleanCheat::Hook->UnSwapVmt(localPlayer->ViewportClient, POST_RENDER_INDEX, &OPostRender);
     }
 
@@ -151,7 +151,7 @@ void MainEntryPoint(HMODULE hModule)
     LOG("GWorld: %p", gWorld);
 
     // LocalPlayer
-    CG::ULocalPlayer* localPlayer = Utils::GetLocalPlayer();
+    CG::ULocalPlayer* localPlayer = CleanCheatUtils::GetLocalPlayer();
     if (!localPlayer)
     {
         LOG("localPlayer is nullptr");

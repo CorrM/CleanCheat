@@ -1,9 +1,9 @@
 #include "pch.h"
 #include <cstdlib>
 #include <ctime>
-#include "Utils.h"
+#include "CleanCheatUtils.h"
 
-float Utils::RandomFloat(const float min, const float max)
+float CleanCheatUtils::RandomFloat(const float min, const float max)
 {
     srand(static_cast<unsigned>(time(nullptr)));
     
@@ -13,12 +13,12 @@ float Utils::RandomFloat(const float min, const float max)
     return min + r;
 }
 
-bool Utils::IsInCircle(const CG::FVector2D& point, const CG::FVector2D& circlePos, const float radius)
+bool CleanCheatUtils::IsInCircle(const CG::FVector2D& point, const CG::FVector2D& circlePos, const float radius)
 {
     return sqrt(pow(point.X - circlePos.X, 2) + pow(point.Y - circlePos.Y, 2)) <= (radius * M_PI_F);
 }
 
-void Utils::DrawCircle(CG::UCanvas* canvas, const CG::FVector2D& pos, float radius, const int numSides, const CG::FLinearColor& color)
+void CleanCheatUtils::DrawCircle(CG::UCanvas* canvas, const CG::FVector2D& pos, float radius, const int numSides, const CG::FLinearColor& color)
 {
     try
     {
@@ -48,13 +48,13 @@ void Utils::DrawCircle(CG::UCanvas* canvas, const CG::FVector2D& pos, float radi
     catch (...) {}
 }
 
-CG::ULocalPlayer* Utils::GetLocalPlayer()
+CG::ULocalPlayer* CleanCheatUtils::GetLocalPlayer()
 {
     CG::TArray<CG::ULocalPlayer*>& lPlayers = (*CG::UWorld::GWorld)->OwningGameInstance->LocalPlayers;
     return lPlayers[0];
 }
 
-CG::FVector2D Utils::WorldToScreen(const CG::FVector& input, bool* outSuccess)
+CG::FVector2D CleanCheatUtils::WorldToScreen(const CG::FVector& input, bool* outSuccess)
 {
     CG::FVector2D screenPos;
 
@@ -80,7 +80,7 @@ Exit:
     return screenPos;
 }
 
-CG::FVector2D Utils::BoneIdToScreen(const CG::USkeletalMeshComponent* const mesh, CG::APlayerController* const localController, const int32_t boneId, bool* success)
+CG::FVector2D CleanCheatUtils::BoneIdToScreen(const CG::USkeletalMeshComponent* const mesh, CG::APlayerController* const localController, const int32_t boneId, bool* success)
 {
     CG::FVector2D screenLoc;
     if (success)
@@ -97,7 +97,7 @@ CG::FVector2D Utils::BoneIdToScreen(const CG::USkeletalMeshComponent* const mesh
     return screenLoc;
 }
 
-CG::FVector2D Utils::BoneIdToScreen(const CG::ACharacter* const character, CG::APlayerController* localController, const int32_t boneId, bool* success)
+CG::FVector2D CleanCheatUtils::BoneIdToScreen(const CG::ACharacter* const character, CG::APlayerController* localController, const int32_t boneId, bool* success)
 {
     if (!character || !localController || !character->Mesh)
         return {0.f, 0.f};
@@ -105,14 +105,14 @@ CG::FVector2D Utils::BoneIdToScreen(const CG::ACharacter* const character, CG::A
     return BoneIdToScreen(character->Mesh, localController, boneId, success);
 }
 
-bool Utils::EndsWith(const std::string& s, const std::string& suffix)
+bool CleanCheatUtils::EndsWith(const std::string& s, const std::string& suffix)
 {
     return s.length() >= suffix.length()
                ? (0 == s.compare(s.length() - suffix.length(), suffix.length(), suffix))
                : false;
 }
 
-bool Utils::EndsWith(const std::wstring& s, const std::wstring& suffix)
+bool CleanCheatUtils::EndsWith(const std::wstring& s, const std::wstring& suffix)
 {
     return s.length() >= suffix.length()
                ? (0 == s.compare(s.length() - suffix.length(), suffix.length(), suffix))

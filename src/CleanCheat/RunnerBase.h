@@ -2,11 +2,11 @@
 #include <vector>
 
 #include "Macros.h"
+#include "CleanCheatUtils.h"
 #include "RunnerFeaturesCollectionBase.h"
 #include "RunnerDataProvidersCollectionBase.h"
 #include "DataProviderBase.h"
 #include "FeatureBase.h"
-#include "Utils.h"
 
 template <typename TTaskInputType, class TFeatures = RunnerFeaturesCollectionBase, class TDataProviders = RunnerDataProvidersCollectionBase>
 ABSTRACT class RunnerBase
@@ -92,7 +92,7 @@ private:
     bool RegisterDataProviders()
     {
         _dataProvidersList.clear();
-        std::vector<uintptr_t> dataProviders = Utils::CollectPointersAddress<TDataProviders>(&DataProviders);
+        std::vector<uintptr_t> dataProviders = CleanCheatUtils::CollectPointersAddress<TDataProviders>(DataProviders);
         for (uintptr_t& dataProviderAddress : dataProviders)
         {
             auto* dataProvider = reinterpret_cast<DataProviderBase<TTaskInputType, void>*>(dataProviderAddress);
@@ -114,7 +114,7 @@ private:
     bool RegisterFeatures()
     {
         _featuresList.clear();
-        std::vector<uintptr_t> features = Utils::CollectPointersAddress<TFeatures>(&Features);
+        std::vector<uintptr_t> features = CleanCheatUtils::CollectPointersAddress<TFeatures>(Features);
         for (uintptr_t& featureAddress : features)
         {
             auto* feature = reinterpret_cast<FeatureBase<TTaskInputType>*>(featureAddress);
@@ -131,6 +131,13 @@ private:
     }
 
 protected:
+    virtual bool OnInit()
+    {
+        return true;
+    }
+
+    virtual void OnDiscard() { }
+
     virtual void OnExecute() = 0;
 
     /// <summary>
@@ -194,7 +201,7 @@ public:
         if (_init)
             return false;
 
-        return _init = (RegisterDataProviders() && RegisterFeatures());
+        return _init = (RegisterDataProviders() && RegisterFeatures() && OnInit());
     }
 
     /// <summary>
@@ -212,6 +219,8 @@ public:
     /// </summary>
     void Discard()
     {
+        OnDiscard();
+        
         // Features
         for (FeatureBase<void>* feature : _featuresList)
         {
