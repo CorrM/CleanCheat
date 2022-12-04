@@ -6,9 +6,9 @@ void TestFeature::OnExecute(int* param)
     std::cout << *param << " From TestFeature" << std::endl;
 }
 
-std::wstring TestFeature::Name()
+std::string TestFeature::Name()
 {
-    return L"TestFeature";
+    return "TestFeature";
 }
 
 bool TestFeature::Condition(int* param)

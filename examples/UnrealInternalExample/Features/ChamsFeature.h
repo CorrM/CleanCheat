@@ -29,7 +29,7 @@ protected:
 	void OnExecute(CG::AActor* curActor) override;
 
 public:
-	std::wstring Name() override;
+	std::string Name() override;
 	bool Condition(CG::AActor* curActor) override;
 	void BeforeExecute() override;
 };

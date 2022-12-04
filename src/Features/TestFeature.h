@@ -10,6 +10,6 @@ protected:
     void OnExecute(int* param) override;
     
 public:
-    std::wstring Name() override;
+    std::string Name() override;
     bool Condition(int* param) override;
 };

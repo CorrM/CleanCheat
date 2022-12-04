@@ -245,9 +245,9 @@ void ChamsFeature::OnExecute(CG::AActor* curActor)
     }
 }
 
-std::wstring ChamsFeature::Name()
+std::string ChamsFeature::Name()
 {
-    return L"ChamsFeature";
+    return "ChamsFeature";
 }
 
 bool ChamsFeature::Condition(CG::AActor* curActor)

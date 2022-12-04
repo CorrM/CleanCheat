@@ -7,9 +7,9 @@ void BasicFeature::OnExecute(int* param)
     std::cout << *param << " From BasicFeature" << std::endl;
 }
 
-std::wstring BasicFeature::Name()
+std::string BasicFeature::Name()
 {
-    return L"BasicFeature";
+    return "BasicFeature";
 }
 
 bool BasicFeature::Condition(int* param)

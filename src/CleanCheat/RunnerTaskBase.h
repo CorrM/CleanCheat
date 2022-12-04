@@ -28,7 +28,7 @@ protected:
     virtual void OnDestroy() { }
     
 public:
-    virtual std::wstring Name() = 0;
+    virtual std::string Name() = 0;
 
     /// <summary>
     /// Determinate initialization status

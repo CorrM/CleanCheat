@@ -5,7 +5,7 @@ void BasicDataProvider::OnExecute(int* param)
     SetData(&_secretName);
 }
 
-std::wstring BasicDataProvider::Name()
+std::string BasicDataProvider::Name()
 {
-    return L"BasicDataProvider";
+    return "BasicDataProvider";
 }

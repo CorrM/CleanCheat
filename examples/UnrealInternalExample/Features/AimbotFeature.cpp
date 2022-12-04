@@ -141,9 +141,9 @@ void AimbotFeature::OnExecute(CG::AActor* curActor)
     }
 }
 
-std::wstring AimbotFeature::Name()
+std::string AimbotFeature::Name()
 {
-    return L"AimbotFeature";
+    return "AimbotFeature";
 }
 
 bool AimbotFeature::Condition(CG::AActor* curActor)
