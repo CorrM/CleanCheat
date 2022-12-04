@@ -128,6 +128,9 @@ public:
     template <class TSettings = FeatureSettings>
     bool RegisterFeature(FeatureBase<TType, TSettings>* feature)
     {
+        if (!feature)
+            return false;
+        
         if (!feature->IsInitialized())
             return false;
 
@@ -142,6 +145,9 @@ public:
     template <class TOut = void>
     bool RegisterDataProvider(DataProviderBase<TType, TOut>* dataProvider)
     {
+        if (!dataProvider)
+            return false;
+        
         if (!dataProvider->IsInitialized())
             return false;
 
