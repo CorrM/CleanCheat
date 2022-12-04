@@ -1,7 +1,7 @@
 #pragma once
 #include "CleanCheat/SharedDataBase.h"
 
-class SharedDataStruct final : public SharedDataBase<int>
+class MySharedData final : public SharedDataBase<int>
 {
 public:
 	int MagicNumber = 50;

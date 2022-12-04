@@ -4,7 +4,7 @@
 
 class CG::UCanvas;
 
-class SharedDataStruct final : public SharedDataBase<CG::UCanvas>
+class MySharedData final : public SharedDataBase<CG::UCanvas>
 {
 public:
 	class CG::UWorld* GWorld = nullptr;

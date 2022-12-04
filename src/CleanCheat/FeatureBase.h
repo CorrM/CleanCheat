@@ -3,27 +3,25 @@
 #include "FeatureSettings.h"
 #include "RunnerTaskBase.h"
 
-template <typename TType, class TSettings = FeatureSettings>
-ABSTRACT class FeatureBase : public RunnerTaskBase<TType>
+template <typename TType, class TSettings = FeatureSettings, typename TInitDataType = void>
+ABSTRACT class FeatureBase : public RunnerTaskBase<TType, TInitDataType>
 {
 public:
-    TSettings* Settings;
+    TSettings Settings{};
 
 private:
-    bool OnInitialize(void* initData = nullptr) override
+    bool OnInitialize(TInitDataType* initData = nullptr) override
     {
-        Settings = new TSettings();
-        return Settings->Init() && OnInit();
+        return Settings.Init() && OnInit();
     }
 
     void OnDestroy() override
     {
         OnDiscard();
-        DELETE_HEAP(Settings);
     }
 
 public:
-    virtual bool OnInit(void* initData = nullptr)
+    virtual bool OnInit(TInitDataType* initData = nullptr)
     {
         return true;
     }

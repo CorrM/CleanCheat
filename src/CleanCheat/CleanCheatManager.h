@@ -17,43 +17,45 @@ class CleanCheat final
 private:
     inline static bool _init = false;
     inline static bool _busy = false;
-    inline static CleanCheatOptions _options;
     inline static FILE* _consoleOut = nullptr;
+    inline static CleanCheatOptions _options;
     inline static std::vector<RunnerBase<void>*> _runners;
 
 public:
-    inline static SHARED_DATA_TYPE* SharedData = nullptr;
-    inline static MemoryManager* Memory = nullptr;
-    inline static HookManager* Hook = nullptr;
+    inline static RunnersCollection* Runners = new RunnersCollection();
+    inline static SHARED_DATA_TYPE* SharedData = new SHARED_DATA_TYPE();
+    inline static MemoryManager* Memory = new MemoryManager();
+    inline static HookManager* Hook = new HookManager();
     
 public:
-    static void Init(const CleanCheatOptions& options)
+    static bool Init(const CleanCheatOptions& options)
     {
         if (_init)
-            return;
-        _init = true;
+            return false;
+        
         _options = options;
-
-        if (options.UseLogger)
+        if (_options.UseLogger)
         {
             AllocConsole();
             freopen_s(&_consoleOut, "CONOUT$", "w", stdout);  // NOLINT(cert-err33-c)
         }
 
-        SharedData = new SHARED_DATA_TYPE();
-        Memory = new MemoryManager();
-        Hook = new HookManager();
-    }
+        // Runner
+        _runners.clear();
+        std::vector<uintptr_t> runners = Utils::CollectPointersAddress<RunnersCollection>(&Runners);
+        for (uintptr_t& runnerAddress : runners)
+        {
+            auto* runner = reinterpret_cast<RunnerBase<void>*>(runnerAddress);
+            if (!runner)
+                return false;
+        
+            if (!runner->IsInitialized())
+                return false;
 
-    template <class T>
-    static bool RegisterRunner(RunnerBase<T>* runner)
-    {
-        if (!_init)
-            return false;
-
-        _runners.push_back(reinterpret_cast<RunnerBase<void>*>(runner));
-
-        return true;
+            _runners.push_back(runner);
+        }
+        
+        return _init = true;
     }
 
     template <typename TSharedTickParamType>

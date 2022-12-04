@@ -191,7 +191,7 @@
     <ClCompile Include="SDK\Engine_Package.cpp" />
     <ClCompile Include="SDK\WW3_Package.cpp" />
     <ClCompile Include="Runners\LevelActorsRunner.cpp" />
-    <ClCompile Include="SharedDataStruct.cpp" />
+    <ClCompile Include="MySharedData.cpp"/>
     <ClCompile Include="Utils.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -204,7 +204,7 @@
     <ClInclude Include="pch.h" />
     <ClInclude Include="Runners\LevelActorsRunner.h" />
     <ClInclude Include="SDK.h" />
-    <ClInclude Include="SharedDataStruct.h" />
+    <ClInclude Include="MySharedData.h"/>
     <ClInclude Include="Utils.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

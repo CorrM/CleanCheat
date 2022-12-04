@@ -7,7 +7,7 @@ public:
     bool Test = false;
 };
 
-class BasicFeature final : public FeatureBase<int, BasicSettings>
+class BasicFeature final : public FeatureBase<int, BasicSettings, int>
 {
 protected:
     void OnExecute(int* param) override;

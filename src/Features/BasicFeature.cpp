@@ -14,5 +14,5 @@ std::string BasicFeature::Name()
 
 bool BasicFeature::Condition(int* param)
 {
-    return Settings->Enable;
+    return Settings.Enable;
 }

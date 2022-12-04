@@ -1,8 +1,8 @@
 #include "pch.h"
 #include "Utils.h"
-#include "SharedDataStruct.h"
+#include "MySharedData.h"
 
-void SharedDataStruct::Tick(CG::UCanvas* canvas)
+void MySharedData::Tick(CG::UCanvas* canvas)
 {
     CurrentCanvas = canvas;
 

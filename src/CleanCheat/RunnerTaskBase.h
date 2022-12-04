@@ -2,7 +2,7 @@
 #include <string>
 #include "Macros.h"
 
-template <typename TType>
+template <typename TType, typename TInitDataType = void>
 ABSTRACT class RunnerTaskBase
 {
 private:
@@ -17,7 +17,7 @@ protected:
     /// <summary>
     /// Called by Init method
     /// </summary>
-    virtual bool OnInitialize(void* initData)
+    virtual bool OnInitialize(TInitDataType* initData)
     {
         return true;
     }
@@ -28,6 +28,9 @@ protected:
     virtual void OnDestroy() { }
     
 public:
+    /// <summary>
+    /// Get task name
+    /// </summary>
     virtual std::string Name() = 0;
 
     /// <summary>
@@ -63,7 +66,7 @@ public:
     /// <summary>
     /// Initialize runner task
     /// </summary>
-    bool Init(void* initData = nullptr)
+    bool Init(TInitDataType* initData = nullptr)
     {
         if (_init)
             return false;

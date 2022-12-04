@@ -10,13 +10,7 @@ private:
     TOutDataType* _data = nullptr;
     
 protected:
-    TOptions* _options = nullptr;
-    
-public:
-    DataProviderBase()
-    {
-        _options = new TOptions();
-    }
+    TOptions _options{};
     
 protected:
     /// <summary>
@@ -33,7 +27,6 @@ protected:
     void OnDestroy() override
     {
         OnDiscard();
-        DELETE_HEAP(_options);
     }
     
 public:

@@ -1,4 +1,5 @@
 ﻿#pragma once
 
-#include "SharedDataStruct.h" // Your SharedData class
-#include "CleanCheat/CleanCheat.h"
+#include "CleanCheatSettings.h"
+#include "CleanCheat/CleanCheatManager.h"
+

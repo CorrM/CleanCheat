@@ -1,9 +1,5 @@
 ﻿#pragma once
 
-// SETTINGS
-#define USE_LOGGER              1
-#define SHARED_DATA_TYPE        SharedDataStruct
-
 // KEYWORDS
 #define ABSTRACT
 
