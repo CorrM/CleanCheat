@@ -7,9 +7,11 @@ template <typename TInputType, typename TOutDataType, class TOptions = DataProvi
 ABSTRACT class DataProviderBase : public RunnerTaskBase<TInputType>
 {
 private:
-    TOptions* _options = nullptr;
     TOutDataType* _data = nullptr;
-
+    
+protected:
+    TOptions* _options = nullptr;
+    
 public:
     DataProviderBase()
     {
