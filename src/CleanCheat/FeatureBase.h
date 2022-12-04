@@ -30,7 +30,6 @@ public:
 
     virtual void OnDiscard() { }
 
-public:
     /// <summary>
     /// Condition runner will use to determine will execute this feature or not
     /// </summary>

@@ -27,6 +27,7 @@
     <ClCompile Include="SharedDataStruct.cpp" />
     <ClInclude Include="CleanCheat.h" />
     <ClInclude Include="CleanCheat\DataProviderBase.h" />
+    <ClInclude Include="CleanCheat\DataProviderOptionsBase.h"/>
     <ClInclude Include="CleanCheat\FeatureSettings.h" />
     <ClInclude Include="CleanCheat\Macros.h" />
     <ClInclude Include="CleanCheat\HookManager.h" />
