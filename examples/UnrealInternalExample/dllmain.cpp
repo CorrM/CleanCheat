@@ -22,6 +22,12 @@ AimbotFeature* Aimbot = nullptr;
 
 bool InitCleanCheat()
 {
+    // Init CleanCheat
+    CleanCheatOptions options;
+    options.UseLogger = true;
+
+    CleanCheat::Init(options);
+    
     // Features
     Chams = new ChamsFeature();
     Chams->Init();
@@ -41,12 +47,6 @@ bool InitCleanCheat()
         LOG("Runner registration failed");
         return false;
     }
-
-    CleanCheatOptions options;
-    options.UseLogger = true;
-
-    // Init CleanCheat
-    CleanCheat::Init(options);
 
     bool regRunners = true;
     regRunners &= CleanCheat::RegisterRunner(actorRunner);
