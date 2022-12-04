@@ -27,11 +27,16 @@ Game cheat base and clean architecture for your next cheat
     * [Runner and Feature](#runner-and-feature)
       * [Runner](#runner)
         * [Runner life cycle](#runner-life-cycle)
+      * [DataProvider](#dataprovider)
       * [Feature](#feature)
         * [Feature life cycle](#feature-life-cycle)
   * [Examples](#examples)
   * [Credits](#credits)
   * [Third-party libraries](#third-party-libraries)
+  * [Change Log](#change-log)
+        * [0.0.3](#003)
+        * [0.0.2](#002)
+        * [0.0.1](#001)
 <!-- TOC -->
 
 ## Features
