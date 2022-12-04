@@ -369,9 +369,11 @@ There are a number of examples that demonstrate various aspects of using `CleanC
 | [InternalUnrealEngine](examples/UnrealInternalExample/dllmain.cpp) | Shows how to use with [CheatGear](https://github.com/CorrM/CG) |
 
 
-## Credits
+## Contributors
 
-[CorrM](https://github.com/CorrM)
+<a href="https://github.com/CorrM/CleanCheat/graphs/contributors">
+  <img src="https://contrib.rocks/image?repo=CorrM/CleanCheat" />
+</a>
 
 ## Third-party libraries
 
