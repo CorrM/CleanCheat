@@ -71,12 +71,18 @@ public:
         
         return Settings->Init() && OnInit(initData);
     }
-
+     
     /// <summary>
     /// Discard
     /// </summary>
-    virtual void Discard()
+    void Discard()
     {
+        OnDiscard();
         DELETE_HEAP(Settings);
     }
+
+    /// <summary>
+    /// Called by discard method
+    /// </summary>
+    virtual void OnDiscard() { }
 };
