@@ -1,5 +1,8 @@
 ﻿#pragma once
 
+// SETTINGS
+#define USE_LOGGER              1
+
 // KEYWORDS
 #define ABSTRACT
 

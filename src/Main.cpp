@@ -44,7 +44,7 @@ int main(int argc, char* argv[])
     {
         CleanCheat::Tick(&initData);
 
-        const char* dataStr = basicRunner->DataProviders->Basic->GetData()->c_str()
+        const char* dataStr = basicRunner->DataProviders->Basic->GetData()->c_str();
         LOG("BasicDataProvider say: %s", dataStr);
         
         std::this_thread::sleep_for(std::chrono::milliseconds(1000));

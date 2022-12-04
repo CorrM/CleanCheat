@@ -36,7 +36,7 @@ public:
     /// Get options of this data provider, You can change its options to get
     /// different output data
     /// </summary>
-    TOptions* GetOptions()
+    TOptions& GetOptions()
     {
         return _options;
     }
