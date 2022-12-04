@@ -53,6 +53,11 @@ public:
     virtual void AfterExecute() { }
 
     /// <summary>
+    /// Condition runner will use to determine will execute this feature or not
+    /// </summary>
+    virtual bool Condition(TType* param) = 0;
+    
+    /// <summary>
     /// Called during runner executive once or more depend on the runner
     /// </summary>
     void Execute(TType* param)

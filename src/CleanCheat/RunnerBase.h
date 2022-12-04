@@ -147,13 +147,16 @@ protected:
     {
         for (DataProviderBase<TTaskInputType, void>* const& dataProviders : _dataProvidersList)
         {
-            try
+            if (dataProviders->Condition(item))
             {
-                dataProviders->Execute(item);
-            }
-            catch (...)
-            {
-                LOG("Runner ERROR (ExecuteTasks): DataProvider(%s) throws unhandled exception", dataProviders->Name().c_str());
+                try
+                {
+                    dataProviders->Execute(item);
+                }
+                catch (...)
+                {
+                    LOG("Runner ERROR (ExecuteTasks): DataProvider(%s) throws unhandled exception", dataProviders->Name().c_str());
+                }
             }
         }
 

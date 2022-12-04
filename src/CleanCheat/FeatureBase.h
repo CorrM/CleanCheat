@@ -27,9 +27,4 @@ public:
     }
 
     virtual void OnDiscard() { }
-
-    /// <summary>
-    /// Condition runner will use to determine will execute this feature or not
-    /// </summary>
-    virtual bool Condition(TType* param) = 0;
 };

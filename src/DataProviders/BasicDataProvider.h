@@ -11,4 +11,5 @@ protected:
     
 public:
     std::string Name() override;
+    bool Condition(int* param) override;
 };
