@@ -133,7 +133,7 @@ public:
             };
             _set_invalid_parameter_handler(invalidParameterHandler);
 
-            //int _ = fclose(stdout);
+            int _ = fclose(stdout);
             FreeConsole();
         }
     }
