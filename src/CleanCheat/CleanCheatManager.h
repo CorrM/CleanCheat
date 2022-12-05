@@ -48,6 +48,11 @@ public:
             //SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), FOREGROUND_RED | FOREGROUND_INTENSITY);
         }
 
+        return _init = true;
+    }
+
+    static bool RegisterRunners()
+    {
         // Runner
         _runners.clear();
         std::vector<uintptr_t> runners = CleanCheatUtils::CollectPointersAddress<RunnersCollection>(Runners);
@@ -63,15 +68,21 @@ public:
             _runners.push_back(runner);
         }
 
-        return _init = true;
+        return true;
     }
-
+    
     template <typename TSharedTickParamType>
     static void Tick(TSharedTickParamType* sharedDataTickParam)
     {
         if (!_init)
             return;
 
+        if (_runners.empty())
+        {
+            LOG("There is no runners, Are you forget to call 'RegisterRunners' function");
+            return;
+        }
+        
         _busy = true;
 
         try
