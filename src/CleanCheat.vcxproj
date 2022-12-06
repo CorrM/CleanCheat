@@ -19,42 +19,30 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="DataProviders\BasicDataProvider.cpp" />
-    <ClCompile Include="Runners\BasicRunner.cpp"/>
-    <ClCompile Include="Features\BasicFeature.cpp"/>
-    <ClCompile Include="Features\TestFeature.cpp"/>
-    <ClCompile Include="Main.cpp"/>
-    <ClCompile Include="MySharedData.cpp"/>
-    <ClInclude Include="CleanCheat.h"/>
-    <ClInclude Include="CleanCheatSettings.h"/>
-    <ClInclude Include="CleanCheat\DataProviderBase.h"/>
-    <ClInclude Include="CleanCheat\DataProviderOptionsBase.h"/>
-    <ClInclude Include="CleanCheat\FeatureSettings.h"/>
-    <ClInclude Include="CleanCheat\Macros.h"/>
-    <ClInclude Include="CleanCheat\HookManager.h"/>
-    <ClInclude Include="CleanCheat\MemoryManager.h"/>
-    <ClInclude Include="CleanCheat\RunnerBase.h"/>
-    <ClInclude Include="CleanCheat\Libs\Detours\detours.h"/>
-    <ClCompile Include="CleanCheat\Libs\Detours\detours.cpp"/>
-    <ClCompile Include="CleanCheat\Libs\Detours\disasm.cpp"/>
-    <ClCompile Include="CleanCheat\Libs\Detours\modules.cpp"/>
-    <ClInclude Include="CleanCheat\CleanCheatManager.h"/>
-    <ClInclude Include="CleanCheat\FeatureBase.h"/>
-    <ClInclude Include="CleanCheat\RunnersCollectionBase.h"/>
-    <ClInclude Include="CleanCheat\RunnerDataProvidersCollectionBase.h"/>
-    <ClInclude Include="CleanCheat\RunnerTaskBase.h"/>
-    <ClInclude Include="CleanCheat\RunnerFeaturesCollectionBase.h"/>
-    <ClInclude Include="CleanCheat\SharedDataBase.h"/>
-    <ClInclude Include="CleanCheat\CleanCheatUtils.h"/>
-    <ClInclude Include="DataProviders\BasicDataProvider.h"/>
-    <ClInclude Include="Features\BasicFeature.h"/>
-    <ClInclude Include="Features\TestFeature.h"/>
-    <ClInclude Include="Runners\BasicRunner.h"/>
-    <ClInclude Include="MySharedData.h"/>
+      <ClInclude Include="CleanCheat.h"/>
+      <ClInclude Include="CleanCheat\DataProviderBase.h"/>
+      <ClInclude Include="CleanCheat\DataProviderOptionsBase.h"/>
+      <ClInclude Include="CleanCheat\FeatureSettings.h"/>
+      <ClInclude Include="CleanCheat\Macros.h"/>
+      <ClInclude Include="CleanCheat\HookManager.h"/>
+      <ClInclude Include="CleanCheat\MemoryManager.h"/>
+      <ClInclude Include="CleanCheat\RunnerBase.h"/>
+      <ClInclude Include="CleanCheat\Libs\Detours\detours.h"/>
+      <ClCompile Include="CleanCheat\Libs\Detours\detours.cpp"/>
+      <ClCompile Include="CleanCheat\Libs\Detours\disasm.cpp"/>
+      <ClCompile Include="CleanCheat\Libs\Detours\modules.cpp"/>
+      <ClInclude Include="CleanCheat\CleanCheatManager.h"/>
+      <ClInclude Include="CleanCheat\FeatureBase.h"/>
+      <ClInclude Include="CleanCheat\RunnersCollectionBase.h"/>
+      <ClInclude Include="CleanCheat\RunnerDataProvidersCollectionBase.h"/>
+      <ClInclude Include="CleanCheat\RunnerTaskBase.h"/>
+      <ClInclude Include="CleanCheat\RunnerFeaturesCollectionBase.h"/>
+      <ClInclude Include="CleanCheat\SharedDataBase.h"/>
+      <ClInclude Include="CleanCheat\CleanCheatUtils.h"/>
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>15.0</VCProjectVersion>
-    <ProjectGuid>{3E9D758B-0FCA-4D12-817E-F6CC0B6D46DA}</ProjectGuid>
+      <ProjectGuid>{BEEC61DF-CAB9-4549-B120-AB313524296D}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
     <RootNamespace>CleanCheat</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
@@ -148,7 +136,6 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalOptions></AdditionalOptions>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">

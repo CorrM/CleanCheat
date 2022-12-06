@@ -43,12 +43,12 @@ public:
     }
 
     /// <summary>
-    /// Called before runner executive
+    /// Called before runner executive, Once per frame
     /// </summary>
     virtual void BeforeExecute() { }
 
     /// <summary>
-    /// Called after runner executive
+    /// Called after runner executive, Once per frame
     /// </summary>
     virtual void AfterExecute() { }
 

@@ -15,7 +15,13 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="CleanCheat.cpp">
+    <ClCompile Include="CleanCheat\Libs\Detours\detours.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="CleanCheat\Libs\Detours\disasm.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="CleanCheat\Libs\Detours\modules.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -23,16 +29,55 @@
     <ClInclude Include="CleanCheat.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="FeatureBase.h">
+    <ClInclude Include="CleanCheatSettings.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Macros.h">
+    <ClInclude Include="CleanCheat\DataProviderBase.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="RunnerBase.h">
+    <ClInclude Include="CleanCheat\DataProviderOptionsBase.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="SharedDataBase.h">
+    <ClInclude Include="CleanCheat\FeatureSettings.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="CleanCheat\Macros.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="CleanCheat\HookManager.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="CleanCheat\MemoryManager.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="CleanCheat\RunnerBase.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="CleanCheat\Libs\Detours\detours.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="CleanCheat\CleanCheatManager.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="CleanCheat\FeatureBase.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="CleanCheat\RunnersCollectionBase.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="CleanCheat\RunnerDataProvidersCollectionBase.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="CleanCheat\RunnerTaskBase.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="CleanCheat\RunnerFeaturesCollectionBase.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="CleanCheat\SharedDataBase.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="CleanCheat\CleanCheatUtils.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
