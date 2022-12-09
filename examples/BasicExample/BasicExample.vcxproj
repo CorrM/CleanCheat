@@ -29,6 +29,7 @@
         <ClCompile Include="Main.cpp"/>
         <ClCompile Include="MySharedData.cpp"/>
         <ClInclude Include="..\..\src\CleanCheat\**\*.h"/>
+        <ClInclude Include="CleanCheatSettings.h"/>
         <ClInclude Include="DataProviders\BasicDataProvider.h"/>
         <ClInclude Include="Features\BasicFeature.h"/>
         <ClInclude Include="Features\TestFeature.h"/>

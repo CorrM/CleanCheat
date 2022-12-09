@@ -1,42 +1,70 @@
 # CleanCheat
 
-Game cheat base and clean architecture for your next cheat
+Game cheat base and clean architecture for your next cheat, even it's a cheat it should be clean
+
+## Why CleanCheat
+
+**Project maintenance**
+
+Let's say i have level objects loop that have like 10k object, and every **type** of objects have different task to do,
+if i have `PlayerObject` and `WeaponObject`, and i want to make ESP for players and zero recoil for weapons,
+then that is a different tasks but related to same task(object iterate).
+
+Problem example code will be very UGLY and very hard to maintain fast:
+```c++
+for (int i = 0; i < OBJECT_COUNT; ++i)
+{
+    if (OBJECT[i] is PlayerObject) // Condition
+    {
+        if (!OBJECT[i]->IsDead() && OBJECT[i]->Distance < 100.f) // Condition
+        {
+            // Collect/Prepare data
+            ...
+            
+            // Draw
+            ...
+        }
+    }
+    
+    if (OBJECT[i] is WeaponObject) // Condition
+    {
+        if (!OBJECT[i]->IsEmpty()) // Condition
+        {
+            // Collect/Prepare data
+            ...
+            
+            // Handle
+            OBJECT[i]->Recoil = 0.f;
+        }
+    }
+}
+```
+
+**Reusability**
+
+With some tweaks you can write Runners, DataProviders and Features only once and share them in all your projects
+
+## Table Of Content
 
 <!-- TOC -->
 * [CleanCheat](#cleancheat)
+  * [Why CleanCheat](#why-cleancheat)
+  * [Table Of Content](#table-of-content)
   * [Features](#features)
   * [Usage](#usage)
-    * [Step1: Adding includes](#step1-adding-includes)
-    * [Step2: Initialization](#step2-initialization)
-      * [Initialize CleanCheat](#initialize-cleancheat)
-      * [Initialize Features](#initialize-features)
-      * [Initialize Runners](#initialize-runners)
-    * [Step3: Use](#step3-use)
-      * [Use Shared data](#use-shared-data)
-      * [Use Logger](#use-logger)
-      * [Use hooks](#use-hooks)
-        * [Hook by swap VMT method address](#hook-by-swap-vmt-method-address)
-        * [Hook by detour function](#hook-by-detour-function)
-      * [Use memory](#use-memory)
-        * [Memory pattern scan](#memory-pattern-scan)
+    * [Step1: Adding includes](#step1--adding-includes)
+    * [Step2: Initialization](#step2--initialization)
+    * [Step3: Use](#step3--use)
   * [Options](#options)
-    * [UseLogger option](#uselogger-option)
   * [Concepts](#concepts)
     * [Shared data](#shared-data)
-      * [Shared data basic setup](#shared-data-basic-setup)
-    * [Runner and Feature](#runner-and-feature)
-      * [Runner](#runner)
-        * [Runner life cycle](#runner-life-cycle)
+    * [Runner](#runner)
+    * [Runner Task](#runner-task)
       * [DataProvider](#dataprovider)
       * [Feature](#feature)
-        * [Feature life cycle](#feature-life-cycle)
   * [Examples](#examples)
-  * [Credits](#credits)
+  * [Contributors](#contributors)
   * [Third-party libraries](#third-party-libraries)
-  * [Change Log](#change-log)
-        * [0.0.3](#003)
-        * [0.0.2](#002)
-        * [0.0.1](#001)
 <!-- TOC -->
 
 ## Features
@@ -44,12 +72,12 @@ Game cheat base and clean architecture for your next cheat
 - Clean architecture
 - Force your code to be maintainable and easy to read
 - Easy to use, initialize and unload(_dll unload_)
-- [Easy global/shared data access](#use-shared-data)
-- [Logger](#use-logger) (_Basic one_)
-- [Hooks](#use-hooks):
+- [Easy global/shared data access](#shared-data)
+- Logger (_Basic one_)
+- Hooks:
   - Un/Detour
   - Un/VMT swap
-- [Memory](#use-memory):
+- Memory:
   - Pattern scan
   - Value scan (`TODO`)
 
@@ -89,81 +117,126 @@ Add this to ItemGroup that have `ClInclude` tags ([Example](https://github.com/C
 - [Initialize shared data](#shared-data-basic-setup) if you will use it
 
 **Note**:  
-In cpp/h files you need to include `CleanCheat.h` **NOT** `CleanCheat/CleanCheat.h`
+In cpp/h files you need to include `CleanCheat.h` **NOT** `CleanCheat/CleanCheatManager.h`
 
 ### Step2: Initialization
 
-#### Initialize CleanCheat
+**CleanCheatSettings**  
 
-You need to pick your options and pass it to `CleanCheat::Init` function
+Create `CleanCheatSettings.h` file in your project folder and its content should be like that
+
+```c++
+#pragma once
+
+#include "CleanCheat/RunnersCollectionBase.h"
+#include "SHARED_DATA_FILENAME.h"
+#include "Runners/BasicRunner.h"
+
+#define SHARED_DATA_TYPE        SHARED_DATA_CLASS_NAME
+
+class RunnersCollection final : public RunnersCollectionBase
+{
+public:
+    // RUNNERS
+};
+```
+
+This file is the only file you need to edit to start using CleanCheat, so that are things you need to change:
+
+| Name                   | Description                  |
+|------------------------|------------------------------|
+| SHARED_DATA_FILENAME   | Shared data header file name |
+| SHARED_DATA_CLASS_NAME | Shared data class name       |
+| RUNNERS                | Runners you want to register |
+
+_Example [CleanCheatSettings.h](examples/BasicExample/CleanCheatSettings.h)_  
+_RUNNERS must to be `pointer to runner`, any other field type will lead to unexpected behavior_
+
+**Initialize CleanCheat**  
+
+First thing to do after create `CleanCheatSettings.h` is initialize `CleanCheat` with [Options](#options) you prefer, actually this should be
+first code you be executed in your project, this is how to initialize `CleanCheat`:
+
 ```c++
 CleanCheatOptions options;
 options.UseLogger = true;
+options.ConsoleTitle = L"CleanCheat";
 
-CleanCheat::Init(options);
+if (!CleanCheat::Init(options))
+    CleanCheat::Discard();
 ```
 
-#### Initialize Features
-**Features used in the example**
-([BasicFeature](src/Features/BasicFeature.h), [TestFeature](src/Features/TestFeature.h))
+**Initialize Runners**
+
+To initialize [Runner](#runner) you need first to initialize all [DataProviders](#dataprovider) and [Features](#feature) it hold:  
+_(Prefer to initialize [DataProviders](#dataprovider) first)_
+
 ```c++
-int initData = 1;
+// # BasicRunner
+// Get basic runner
+BasicRunner* basicRunner = CleanCheat::Runners->Basic;
+BasicRunnerDataProviders* basicDataProviders = basicRunner->DataProviders;
+BasicRunnerFeatures* basicDataFeatures = basicRunner->Features;
 
-BasicFeature basic;
-basic.Init(&initData);
+// # DataProviders
+// Get BasicDataProvider and initalize
+basicDataProviders->Basic->Init();
 
-TestFeature test;
-test.Init();
+// # Features
+// Get BasicFeature and initalize
+basicDataFeatures->Basic->Init(&initData);
+// Get TestFeature and initalize
+basicDataFeatures->Test->Init();
+
+// Init runner after its tasks
+basicRunner->Init();
+
+// Other runners
+// ...
+```
+_([BasicRunner](examples/BasicExample/Runners/BasicRunner.h))_
+
+**Start**
+
+After initialize runners your need to start `CleanCheat`:
+
+```c++
+CleanCheat::Start();
 ```
 
-#### Initialize Runners
+**Execute**
 
-Features must to be initialized before registers it in any runner
-[BasicRunner](src/Runners/BasicRunner.h)
+`CleanCheat` do all it's operation by `CleanCheat::Tick` so it needs to be called from any where that get called at least once per frame:
+You can hook any (DirectX, OpenGL, Vulkan, etc) that called every frame
+[InternalUnrealExample](#examples) use `PostRender` hooked function to do it.  
 
 ```c++
-BasicRunner basicRunner;
-basicRunner.RegisterFeature(&basic);
-basicRunner.RegisterFeature(&test);
-
-// Register the runner
-CleanCheat::RegisterRunner(&basicRunner);
+int sharedDataTickParam = 0;
+CleanCheat::Tick(&sharedDataTickParam);
 ```
 
-Check [examples](#examples) for full initialize
+**Discard**
 
-### Step3: Use
+Discard, stop and clean every operation done by CleanCheat, should only called once before exit.  
+_(that should give you ability to unload your internal dll without need to restart or kill current process)_
 
-You need to include `CleanCheat.h` where ever you want to access `CleanCheat` then you can access what [Features](#Features) it provide,
-for sure that's after [Initialize CleanCheat](#initialize-cleancheat)
-
-`CleanCheat` do all it's operation from `CleanCheat::Tick` so it needs to be called from any place that get called at least once per frame:
-
-**MessageHandler**  
 ```c++
-while (!(GetAsyncKeyState(VK_END) & 1))
-{
-    CleanCheat::Tick(&initData);
-    std::this_thread::sleep_for(std::chrono::milliseconds(1000));
-}
-
 CleanCheat::Discard();
 ```
 
-**Frame hook**:  
-[InternalUnrealExample](#examples) use `PostRender` hooked function to do it.  
-You can hook any (DirectX, OpenGL, Vulkan, etc) that called every frame
+### Step3: Use
 
-#### Use Shared data
+**Use Shared data**
 
 You can access **shared data** related stuff using `CleanCheat::SharedData`
 ```c++
+// Access shared data
 CleanCheat::SharedData->ANY_DATA;
 ```
 
-#### Use Logger
+**Logger**
 
-You can log by `LOG` macro that's only work if [UseLogger option](#uselogger-option) are `ture`
+You can log by `LOG` macro that's only work if `UseLogger` option are `ture`
 
 ```c++
 int main(int argc, char* argv[])
@@ -175,50 +248,43 @@ int main(int argc, char* argv[])
     LOG("Hello '%s' users", "CleanCheat");
     return 0;
 }
+
+// Output
+// [Main.cpp:main:11] Hello 'CleanCheat' users
 ```
 
-**Output**:  
-Under the hood it use `std::printf` function with format `[FILE_NAME:FUNC_NAME:CODE_LINE] USER_MESSAGE`
-```
-[Main.cpp:main:11] Hello 'CleanCheat' users
-```
-
-#### Use hooks
+**Hooks**
 
 You can access **hooking** related stuff using `CleanCheat::Hook`
 
-##### Hook by swap VMT method address
-
 ```c++
+// Swap VMT method address
 void* outOrignalMethodAddress = nullptr;
 CleanCheat::Hook->SwapVmt(INSTANCE_ADDRESS, METHOD_INDEX, &HOOK_FUNC, &outOrignalMethodAddress);
-```
 
-##### Hook by detour function
-
-```c++
+// Detour function
 void* functionAddress = 0x123456CD;
 CleanCheat::Hook->Detour(&functionAddress, &HOOK_FUNC);
 ```
 
-#### Use memory
+**Memory**
 
 You can access **memory** related stuff using `CleanCheat::Memory`
 
-##### Memory pattern scan
-
 ```c++
-// Look for "48 89 5C 24" in main module, and maximum result 2
+// Pattern scan
+// Look for "48 89 5C 24" in main module, and maximum result 2 (0 for get all result)
 std::vector<void*> addrs = CleanCheat::Memory->PatternScan("48 89 5C 24", 2);
 ```
 
 ## Options
 
-Options presented by `CleanCheatOptions` struct that are passed when [initialize CleanCheat](#initialize-cleancheat)
+Options presented by `CleanCheatOptions` struct that are passed when [initialize CleanCheat](#step2--initialization)
 
-### UseLogger option
-
-Enable console logging by [](#use-logger)
+| Option       | Type   | Description                                                    |
+|--------------|--------|----------------------------------------------------------------|
+| UseLogger    | bool   | Enable console logging by attaching or allocate console window |
+| ConsoleTitle | string | Console window title                                           |
 
 ## Concepts
 
@@ -227,53 +293,16 @@ Enable console logging by [](#use-logger)
 The place where you would store global status and shared data, you could also add functions too.
 As every code need it's own collection of shared data you will need to make your own class.
 
-#### Shared data basic setup
+**Shared data basic setup**
 
-1. Make a class that inherits from `SharedDataBase`
-2. Include its header in `CleanCheat.h` next to `// Your SharedData class`
-3. Edit `SHARED_DATA_TYPE` in `CleanCheat/Macros.h` with your shared data class name (default is `SharedDataStruct`)
+1. Follow [CleanCheatSettings Initialization](#step2--initialization)
+2. Make a class that inherits from `SharedDataBase`
+3. Include its header in `CleanCheatSettings.h`
+4. Edit `SHARED_DATA_TYPE` in `CleanCheatSettings.h` with your shared data class name
 
-Then you can [use shared data](#use-shared-data)
+### Runner
 
-### Runner and Feature
-
-Let's say i have level objects loop that have like 10k object, and every **type** of objects have different task to do,
-if i have `PlayerObject` and `WeaponObject`, and i want to make ESP for players and zero recoil for weapons,
-then that is a different tasks but related to same task(object iterate).
-
-Problem example (trust me, code will be (very UGLY and very hard to maintain) fast):
-```c++
-for (int i = 0; i < OBJECT_COUNT; ++i)
-{
-    if (OBJECT[i] is PlayerObject) // Condetion
-    {
-        if (!OBJECT[i]->IsDead() && OBJECT[i]->Distance < 100.f) // Condetion
-        {
-            // Collect/Preper data
-            ...
-            
-            // Draw
-            ...
-        }
-    }
-    
-    if (OBJECT[i] is WeaponObject) // Condetion
-    {
-        if (!OBJECT[i]->IsEmpty()) // Condetion
-        {
-            // Collect/Preper data
-            ...
-            
-            // Handle
-            OBJECT[i]->Recoil = 0.f;
-        }
-    }
-}
-```
-
-#### Runner
-
-Runner concept present task that can be splited into tasks([Features](#feature)) with providing input to that tasks to check and handle.
+Runner concept present task that can be split into tasks([Features](#feature)) with providing input to that tasks to check and handle.
 
 In our example runner will present the loop `for (int i = 0; i < OBJECT_COUNT; ++i)` and iterator `Object` as input for our [Features](#feature).
 ```c++
@@ -296,7 +325,7 @@ void LevelObjectsRunner::OnExecute()
 }
 ```
 
-##### Runner life cycle
+**Runner life cycle**
 
 | Func       | Description                                                      |
 |------------|------------------------------------------------------------------|
@@ -304,18 +333,49 @@ void LevelObjectsRunner::OnExecute()
 | Condition  | Called before OnExecute by CleanCheat to determine run it or not |
 | Discard    | Called by CleanCheat when CleanCheat itself get discarded        |
 
+### Runner Task
+
+Runner task is the concept of any task that run under [Runner](#runner) wings.
+
+| Type         | Description                                                             |
+|--------------|-------------------------------------------------------------------------|
+| DataProvider | Task that exist to provide data to runner itself or one of its features |
+| Feature      | Task runner will invoke to handle part of your project logic            |
+
 #### DataProvider
 
-TODO
+DataProvider concept present [Runner](#runner) sub-task that can do calculate/grab data with **one input** after pass a **condition**.
+
+```c++
+bool BestTargetDataProvider::Condition(Actor* curActor)
+{
+    return CleanCheat::SharedData
+        && CleanCheat::SharedData->CurrentCanvas
+        && CleanCheat::SharedData->CurrentWorld
+        && CleanCheat::SharedData->GCharacter
+        && curActor->IsA(ACharacterBP_C);
+}
+
+void BestTargetDataProvider::AfterExecute()
+{
+    SetData(LastBestTargetPlayer.Player);
+}
+
+void BestTargetDataProvider::OnExecute(AActor* curActor)
+{
+    // ...
+}
+
+```
 
 #### Feature
 
-Feature concept present [runner](#runner) sub-task that can do **one task** with **one input** after pass a **condition**.
+Feature concept present [Runner](#runner) sub-task that can do **one thing** with **one input** after pass a **condition**.
 So you can't pass same feature to multi runner (unexpected behavior).
 Feature are there to spilt runner code and make it easy to maintain easy to read.
 
-In our example feature can be presented as a **Player ESP** task and **Weapon no recoil** task
-in separate isolated class like that:
+In our example feature can be presented as a **Player ESP** drawer or **Weapon** no recoil
+in separate isolated classes like that:
 ```c++
 bool EspFeature::Condition(Object* curObject)
 {
@@ -348,7 +408,7 @@ void WeaponZeroRecoilFeature::OnExecute(Object* curObject)
 }
 ```
 
-##### Feature life cycle
+**Feature life cycle**
 
 | Func          | Description                                                                                    |
 |---------------|------------------------------------------------------------------------------------------------|
@@ -378,14 +438,3 @@ There are a number of examples that demonstrate various aspects of using `CleanC
 ## Third-party libraries
 
 [Detours](https://github.com/microsoft/Detours)
-
-## Change Log
-
-##### 0.0.3
-- Fix `cannot convert` bug
-
-##### 0.0.2
-- Add feature settings
-
-##### 0.0.1
-- First release

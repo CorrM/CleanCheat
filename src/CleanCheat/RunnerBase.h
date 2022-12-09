@@ -223,7 +223,7 @@ public:
     void Discard()
     {
         OnDiscard();
-        
+
         // Features
         for (FeatureBase<void>* feature : _featuresList)
         {

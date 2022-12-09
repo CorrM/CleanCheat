@@ -8,38 +8,71 @@
 #include "Features/TestFeature.h"
 #include "Runners/BasicRunner.h"
 
-int main(int argc, char* argv[])
+bool CleanCheatInitRunners()
 {
-    // Runner
+    // BasicRunner
     BasicRunner* basicRunner = CleanCheat::Runners->Basic;
+    BasicRunnerDataProviders* basicDataProviders = basicRunner->DataProviders;
+    BasicRunnerFeatures* basicDataFeatures = basicRunner->Features;
     
     // DataProviders
     bool initChecker = true;
-    initChecker &= basicRunner->DataProviders->Basic->Init();
+    initChecker &= basicDataProviders->Basic->Init();
+    if (!initChecker)
+    {
+        LOG("ERROR: Can't initialize DataProviders");
+        return false;
+    }
     
     // Features
     int initData = 1;
-    initChecker &= basicRunner->Features->Basic->Init(&initData);
-    initChecker &= basicRunner->Features->Test->Init();
-
+    initChecker &= basicDataFeatures->Basic->Init(&initData);
+    initChecker &= basicDataFeatures->Test->Init();
+    if (!initChecker)
+    {
+        LOG("ERROR: Can't initialize Features");
+        return false;
+    }
+    
     // Init runner after its tasks
     initChecker &= basicRunner->Init();
 
+    if (!initChecker)
+    {
+        LOG("ERROR: Can't initialize Runners");
+        return false;
+    }
+
+    // Other runners
+    // ...
+    
+    return true;
+}
+
+int main(int argc, char* argv[])
+{
     // CleanCheat
     CleanCheatOptions options;
     options.UseLogger = true;
-    
-    initChecker &= CleanCheat::Init(options);
+    options.ConsoleTitle = L"CleanCheat";
 
-    if (!initChecker)
+    if (!CleanCheat::Init(options))
     {
-        LOG("ERROR: Can't initialize");
+        LOG("ERROR: Can't initialize CleanCheat");
+        CleanCheat::Discard();
         return EXIT_FAILURE;
     }
+
+    if (!CleanCheatInitRunners())
+        return EXIT_FAILURE;
+    
+    CleanCheat::Start();
     
     // # Simple log
     LOG("Hello %s users, press %s key to exit", "CleanCheat", "END");
 
+    int initData = 1;
+    BasicRunner* basicRunner = CleanCheat::Runners->Basic;
     while (!(GetAsyncKeyState(VK_END) & 1))
     {
         CleanCheat::Tick(&initData);

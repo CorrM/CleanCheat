@@ -11,9 +11,9 @@ struct CleanCheatOptions
 public:
     bool UseLogger = false;
 #ifdef UNICODE
-    std::wstring LoggerTitle = TEXT("CleanCheat");
+    std::wstring ConsoleTitle = TEXT("CleanCheat");
 #else
-    std::string LoggerTitle = TEXT("CleanCheat");
+    std::string ConsoleTitle = TEXT("CleanCheat");
 #endif // !UNICODE
 };
 
@@ -21,6 +21,7 @@ class CleanCheat final
 {
 private:
     inline static bool _init = false;
+    inline static bool _starts = false;
     inline static bool _busy = false;
     inline static CleanCheatOptions _options;
     inline static std::vector<RunnerBase<void>*> _runners;
@@ -44,15 +45,19 @@ public:
                 AllocConsole();
 
             freopen_s(reinterpret_cast<FILE**>(stdout), "CONOUT$", "w", stdout); // NOLINT(cert-err33-c)
-            SetConsoleTitle(_options.LoggerTitle.c_str());
+            SetConsoleTitle(_options.ConsoleTitle.c_str());
             //SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), FOREGROUND_RED | FOREGROUND_INTENSITY);
         }
 
         return _init = true;
     }
 
-    static bool RegisterRunners()
+    static bool Start()
     {
+        if (_starts)
+            return false;
+        _starts = true;
+        
         // Runner
         _runners.clear();
         std::vector<uintptr_t> runners = CleanCheatUtils::CollectPointersAddress<RunnersCollection>(Runners);
@@ -68,18 +73,18 @@ public:
             _runners.push_back(runner);
         }
 
-        return true;
+        return _starts = true;
     }
-    
+
     template <typename TSharedTickParamType>
     static void Tick(TSharedTickParamType* sharedDataTickParam)
     {
         if (!_init)
             return;
 
-        if (_runners.empty())
+        if (!_starts)
         {
-            LOG("There is no runners, Are you forget to call 'RegisterRunners' function");
+            LOG("You need to start CleanCheat first, Are you forget to call 'Start' function");
             return;
         }
         
@@ -120,6 +125,9 @@ public:
         while (_busy)
             std::this_thread::sleep_for(std::chrono::milliseconds(2));
 
+        _busy = false;
+        _starts = false;
+        
         // Discard runners
         for (RunnerBase<void>* runner : _runners)
             runner->Discard();
@@ -134,7 +142,7 @@ public:
         DELETE_HEAP(Hook);
         DELETE_HEAP(Runners);
         DELETE_HEAP(SharedData);
-        
+
         // Logger
         if (_options.UseLogger)
         {

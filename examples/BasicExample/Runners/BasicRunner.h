@@ -6,6 +6,13 @@
 #include "Features/BasicFeature.h"
 #include "Features/TestFeature.h"
 
+// DataProviders
+class BasicRunnerDataProviders final : public RunnerDataProvidersCollectionBase
+{
+public:
+    BasicDataProvider* Basic = new BasicDataProvider();
+};
+
 // Features
 class BasicRunnerFeatures final : public RunnerFeaturesCollectionBase
 {
@@ -14,14 +21,7 @@ public:
     TestFeature* Test = new TestFeature();
 };
 
-// DataProviders
-class BasicRunnerDataProviders final : public RunnerDataProvidersCollectionBase
-{
-public:
-    BasicDataProvider* Basic = new BasicDataProvider();
-};
-
-
+// Runner
 class BasicRunner final : public RunnerBase<int, BasicRunnerFeatures, BasicRunnerDataProviders>
 {
 protected:
