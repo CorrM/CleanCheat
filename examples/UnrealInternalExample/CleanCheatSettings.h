@@ -1,15 +1,13 @@
 ﻿#pragma once
 
 #include "CleanCheat/RunnersCollectionBase.h"
-#include "MySharedData.h" // Your SharedData class
-#include "Runners/BasicRunner.h"
+#include "MySharedData.h"
+#include "Runners/LevelActorsRunner.h"
 
-// SETTINGS
 #define SHARED_DATA_TYPE        MySharedData
 
-// Runners
-class RunnersCollection final : RunnersCollectionBase
+class RunnersCollection final : public RunnersCollectionBase
 {
 public:
-    BasicRunner* Basic = new BasicRunner();
+    LevelActorsRunner* LevelActors = new LevelActorsRunner();
 };

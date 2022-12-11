@@ -1,11 +1,8 @@
 #include "pch.h"
 #include "Global.h"
-#include "CleanCheatUtils.h"
+#include "Utils.h"
 
 #include "CleanCheat.h"
-#include "Runners/LevelActorsRunner.h"
-#include "Features/AimbotFeature.h"
-#include "Features/ChamsFeature.h"
 
 typedef void (__thiscall* ProcessEventType)(CG::UObject*, CG::UFunction*, void*);
 typedef void (__thiscall* PostRenderType)(CG::UGameViewportClient*, CG::UCanvas*);
@@ -17,10 +14,6 @@ bool Unload = false;
 bool Once = false;
 bool Working = false;
 
-ChamsFeature* Chams = nullptr;
-AimbotFeature* Aimbot = nullptr;
-LevelActorsRunner* ActorRunner = nullptr;
-
 bool InitCleanCheat()
 {
     // Init CleanCheat
@@ -28,55 +21,31 @@ bool InitCleanCheat()
     options.UseLogger = true;
 
     CleanCheat::Init(options);
-    
+
+    LevelActorsRunner* lvlRunner = CleanCheat::Runners->LevelActors;
+
     // Features
-    bool featuresReg = true;
-    Chams = new ChamsFeature();
-    featuresReg &= Chams->Init();
-
-    Aimbot = new AimbotFeature();
-    featuresReg &= Aimbot->Init();
-
-    if (!featuresReg)
+    bool featuresInit = true;
+    featuresInit &= lvlRunner->Features->Chams->Init();
+    if (!featuresInit)
     {
         LOG("Features initialize failed");
         return false;
     }
-    
-    // Runners
-    bool actorFeaturesReg = true;
-    ActorRunner = new LevelActorsRunner();
 
-    actorFeaturesReg &= ActorRunner->RegisterFeature(Chams);
-    actorFeaturesReg &= ActorRunner->RegisterFeature(Aimbot);
-
-    if (!actorFeaturesReg)
+    if (!lvlRunner->Init())
     {
         LOG("Runner registration failed");
         return false;
     }
 
-    bool regRunners = true;
-    regRunners &= CleanCheat::RegisterRunner(ActorRunner);
-
-    return regRunners;
+    return CleanCheat::Start();
 }
 
 void DllUnload()
 {
     Unload = true;
-
-    if (OPostRender)
-    {
-        CG::ULocalPlayer* localPlayer = CleanCheatUtils::GetLocalPlayer();
-        CleanCheat::Hook->UnSwapVmt(localPlayer->ViewportClient, POST_RENDER_INDEX, &OPostRender);
-    }
-
     CleanCheat::Discard();
-
-    DELETE_HEAP(Chams);
-    DELETE_HEAP(Aimbot);
-    DELETE_HEAP(ActorRunner);
 }
 
 void __stdcall ProcessEventHook(CG::UObject* thiz, CG::UFunction* function, void* parms)
@@ -126,19 +95,20 @@ Exit:
 
 void MainEntryPoint(HMODULE hModule)
 {
+    // SDK
+    if (!CG::InitSdk())
+    {
+        MessageBox(nullptr, TEXT("SDK initialization failed"), TEXT("Error"), MB_OK);
+        return;
+    }
+    LOG("SDK Initialized successfully");
+    
     // CleanCheat
     if (!InitCleanCheat())
     {
         LOG("CleanCheat initialization failed");
         return;
     }
-    
-    if (!CG::InitSdk())
-    {
-        LOG("SDK initialization failed");
-        return;
-    }
-    LOG("SDK Initialized successfully");
     LOG("ModuleBase: %p", static_cast<void*>(GetModuleHandleA(nullptr)));
 
     // GWorld
@@ -151,19 +121,19 @@ void MainEntryPoint(HMODULE hModule)
     LOG("GWorld: %p", gWorld);
 
     // LocalPlayer
-    CG::ULocalPlayer* localPlayer = CleanCheatUtils::GetLocalPlayer();
+    CG::ULocalPlayer* localPlayer = Utils::GetLocalPlayer();
     if (!localPlayer)
     {
         LOG("localPlayer is nullptr");
         return;
     }
     LOG("LocalPlayer: %p", localPlayer);
-    LOG("ViewportClient : 0x%llx", reinterpret_cast<uintptr_t>(localPlayer->ViewportClient));
-
+    
     // PostRender
+    LOG("ViewportClient : 0x%llx", reinterpret_cast<uintptr_t>(localPlayer->ViewportClient));
     std::vector<CG::UGameViewportClient*> gameViewportClients = CG::UObject::FindObjects<CG::UGameViewportClient>();
     LOG("GameViewportClientCount: %d", static_cast<int>(gameViewportClients.size()));
-    
+
     CG::UGameViewportClient*& gameViewportClient = gameViewportClients[1]; // Maybe you need to change that number
     void** gameViewportClientVmt = *reinterpret_cast<void***>(gameViewportClient);
     LOG("PostRender     : 0x%llx", reinterpret_cast<uintptr_t>(gameViewportClientVmt[POST_RENDER_INDEX]));
