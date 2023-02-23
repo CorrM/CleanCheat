@@ -136,6 +136,9 @@ public:
         // Un hook all functions
         Hook->UnSwapAll();
         Hook->UnDetourAll();
+        
+        // Shared data
+        SharedData->Discard();
 
         // Free memory
         DELETE_HEAP(Memory);

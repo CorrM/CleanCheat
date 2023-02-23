@@ -4,6 +4,8 @@
 
 #include "CleanCheat.h"
 
+#define GAME_VIEW_PORT_INDEX 0x02  // Maybe you need to change that number
+
 typedef void (__thiscall* ProcessEventType)(CG::UObject*, CG::UFunction*, void*);
 typedef void (__thiscall* PostRenderType)(CG::UGameViewportClient*, CG::UCanvas*);
 
@@ -64,6 +66,7 @@ void __stdcall PostRenderHook(CG::UGameViewportClient* gameViewportClient, CG::U
             Once = true;
 
             CleanCheat::Hook->Detour(reinterpret_cast<void**>(&OProcessEvent), reinterpret_cast<void*>(&ProcessEventHook));
+            LOG("Hook 'ProcessEvent' ... Success");
         }
     }
     catch (...)
@@ -134,7 +137,7 @@ void MainEntryPoint(HMODULE hModule)
     std::vector<CG::UGameViewportClient*> gameViewportClients = CG::UObject::FindObjects<CG::UGameViewportClient>();
     LOG("GameViewportClientCount: %d", static_cast<int>(gameViewportClients.size()));
 
-    CG::UGameViewportClient*& gameViewportClient = gameViewportClients[1]; // Maybe you need to change that number
+    CG::UGameViewportClient*& gameViewportClient = gameViewportClients[GAME_VIEW_PORT_INDEX];
     void** gameViewportClientVmt = *reinterpret_cast<void***>(gameViewportClient);
     LOG("PostRender     : 0x%llx", reinterpret_cast<uintptr_t>(gameViewportClientVmt[POST_RENDER_INDEX]));
 
