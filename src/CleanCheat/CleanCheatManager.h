@@ -33,6 +33,11 @@ public:
     inline static HookManager* Hook = new HookManager();
 
 public:
+    static bool IsInitialized()
+    {
+        return _init;
+    }
+    
     static bool Init(const CleanCheatOptions& options)
     {
         if (_init)
