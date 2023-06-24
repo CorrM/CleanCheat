@@ -1,5 +1,6 @@
 #pragma once
 #include <vector>
+#include <string>
 #include "CleanCheat/FeatureBase.h"
 #include "../SDK/CoreUObject_Structs.h"
 
@@ -17,7 +18,7 @@ private:
 	CG::FLinearColor _redColor = { 1.0f, 0.0f, 0.0f, 1.0f };
 
 private:
-	static wchar_t* S2Wc(const char* c);
+	static std::wstring S2Wc(const char* c);
 	static CG::FLinearColor* GetPlayerDrawColor(CG::AWW3Character* player);
 	static void SetLootMaterial(CG::AActor* actor);
 	static bool IsValidPlayerState(const CG::AWW3PlayerState* playerState);

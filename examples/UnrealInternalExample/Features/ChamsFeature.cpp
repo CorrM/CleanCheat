@@ -6,21 +6,24 @@
 
 int HKeyTestYMulti = 0;
 
-wchar_t* ChamsFeature::S2Wc(const char* c)
+std::wstring ChamsFeature::S2Wc(const char* c)
 {
-    const size_t cSize = strlen(c) + 1;
-    auto* wc = new wchar_t[cSize];
+    size_t outSize = 0;
+    mbstowcs_s(&outSize, nullptr, 0, c, 0);
 
-    size_t outSize;
-    mbstowcs_s(&outSize, wc, cSize, c, cSize - 1);
+    std::wstring wString;
+    if (outSize == 0)
+        return wString;
 
-    return wc;
+    wString.resize(outSize);
+    mbstowcs_s(nullptr, wString.data(), outSize, c, outSize - 1);
+    return wString;
 }
 
 CG::FLinearColor* ChamsFeature::GetPlayerDrawColor(CG::AWW3Character* player)
 {
-    static CG::FLinearColor safeColor = {0.780f, 0.137f, 0.721f, 1.0f};
-    static CG::FLinearColor dangerColor = {0.6f, 0.0f, 0.0f, 1.0f};
+    static CG::FLinearColor safeColor = { 0.780f, 0.137f, 0.721f, 1.0f };
+    static CG::FLinearColor dangerColor = { 0.6f, 0.0f, 0.0f, 1.0f };
 
     if (!CleanCheat::SharedData->GController)
         return nullptr;
@@ -98,7 +101,7 @@ void ChamsFeature::PlayerESP(CG::AWW3Character* const player) const
 
     CG::FVector footBonePos = player->Mesh->GetBoneWorldPos(static_cast<int>(CG::EBone_SKM_CharacterMesh_01_01::b_Spine));
     footBonePos.Z -= 130.f;
-    CG::FVector2D textStartPos = {rootPos.X, Utils::WorldToScreen(footBonePos).Y};
+    CG::FVector2D textStartPos = { rootPos.X, Utils::WorldToScreen(footBonePos).Y };
 
     //SetLootMaterial(player);
     // Draw
@@ -106,7 +109,7 @@ void ChamsFeature::PlayerESP(CG::AWW3Character* const player) const
     {
         CleanCheat::SharedData->CurrentCanvas->K2_DrawBox(
             rootPos,
-            {5.f, 5.f},
+            { 5.f, 5.f },
             1.0f,
             *playerDrawColor);
     }
@@ -187,9 +190,9 @@ bool ChamsFeature::OnInitialize(void* initData)
 {
     _boneVector =
     {
-        {25, 52, 17, 54, 59, 94, 67},
-        {55, 13, 14, 15, 1, 12, 8},
-        {1, 107, 102}
+        { 25, 52, 17, 54, 59, 94, 67 },
+        { 55, 13, 14, 15, 1, 12, 8 },
+        { 1, 107, 102 }
     };
 
     return true;
@@ -218,7 +221,7 @@ void ChamsFeature::OnExecute(CG::AActor* curActor)
 
             CleanCheat::SharedData->CurrentCanvas->K2_DrawText(
                 CleanCheat::SharedData->RobotoFont,
-                S2Wc(curActor->GetFullName().c_str()),
+                S2Wc(curActor->GetFullName().c_str()).c_str(),
                 actorPos,
                 CG::FVector2D(1, 1),
                 CG::FLinearColor(1.0f, 1.0f, 1.0f, 1.0f),
@@ -259,4 +262,3 @@ void ChamsFeature::BeforeExecute()
 {
     HKeyTestYMulti = 0;
 }
-
