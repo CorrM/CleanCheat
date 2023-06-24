@@ -6,7 +6,7 @@
 class FeatureSettings
 {
 public:
-    bool Enable = true;
+    bool Enable = false;
 
 public:
     virtual ~FeatureSettings() = default;

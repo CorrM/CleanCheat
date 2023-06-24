@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 #include <vector>
 
 #include "Macros.h"
@@ -8,7 +8,7 @@
 #include "DataProviderBase.h"
 #include "FeatureBase.h"
 
-template <typename TTaskInputType, class TFeatures = RunnerFeaturesCollectionBase, class TDataProviders = RunnerDataProvidersCollectionBase>
+template <typename TTaskInputType, class TFeatures = RunnerFeaturesCollectionBase, class TDataProviders = RunnerDataProvidersCollectionBase, typename TInitDataType = void>
 ABSTRACT class RunnerBase
 {
 private:
@@ -131,7 +131,7 @@ private:
     }
 
 protected:
-    virtual bool OnInit()
+    virtual bool OnInit(TInitDataType* initData = nullptr)
     {
         return true;
     }
@@ -199,12 +199,12 @@ public:
     /// <summary>
     /// Initialize runner
     /// </summary>
-    bool Init()
+    bool Init(TInitDataType* initData = nullptr)
     {
         if (_init)
             return false;
 
-        return _init = (RegisterDataProviders() && RegisterFeatures() && OnInit());
+        return _init = (RegisterDataProviders() && RegisterFeatures() && OnInit(initData));
     }
 
     /// <summary>
