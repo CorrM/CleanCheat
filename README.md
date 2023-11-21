@@ -413,8 +413,8 @@ void WeaponZeroRecoilFeature::OnExecute(Object* curObject)
 | Func          | Description                                                                                    |
 |---------------|------------------------------------------------------------------------------------------------|
 | OnInit        | Called only once by user before it get registers by runner                                     |
-| OnExecute     | Called by runner during runner executive once or more depend on the runner                     |
 | Condition     | Called before `OnExecute` by runner to determine whether it will call it or not                |
+| OnExecute     | Called by runner during runner executive once or more depend on the runner                     |
 | BeforeExecute | Called by runner **before** call `OnExecute` always get called, doesn't care about `Condition` |
 | AfterExecute  | Called by runner **after** call `OnExecute` always get called, doesn't care about `Condition`  |
 | Discard       | Called by runner when runner itself get discarded                                              |
